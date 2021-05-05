@@ -24,7 +24,7 @@ $(function () {
 
 	var chart = new Chart($('canvas'), config);
 
-	$('button').click(function (e) {
+	$('button').click(function () {
 		$.post("/plane_dive", $('form').serialize(), function (response) {
 			var data = JSON.parse(response);
 			chart.data.datasets[0].data = data;
