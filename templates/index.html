@@ -16,20 +16,151 @@
 	<script src="static/plane_dive.js"></script>
 </head>
 
-<body>
+<body class="bg-light">
 	<div class="container">
-		<form>
-			<h2 class=" text-primary">Dive planner</h2>
-			<label for="username">Bottom time</label><br>
-			<input type="number" name="bottom_time" required><br>
-			<label for="username">Target depth:</label><br>
-			<input type="number" name="target_depth" required><br>
-			<button class="btn btn-lg btn-primary" type="button">Plan dive</button>
-		</form>
+		<br>
+		<h1 class=" text-primary">Dive planner</h1>
 		<canvas id="dive_profile"></canvas>
+		<br>
+		<h2 class=" text-primary">Mixtures</h2>
+
+		<form>
+
+			<div class="row">
+				<div class="col-md-4">
+					<label class="form-label">Target depth (meters)</label>
+					<input type="text" name="target_depth" class="form-control form-floating" value="30">
+				</div>
+				<div class="col-md-4">
+					<label class="form-label">Bottom time (minutes):</label>
+					<input type="number" name="bottom_time" class="form-control" value="30">
+				</div>
+				<div class="col-md-4">
+					<br>
+					<button class="btn btn-lg btn-primary" type="button">Plan dive</button>
+				</div>
+			</div>
+
+			<br>
+
+			<div class="card bg-primary">
+				<div class="card-body">
+					<h3 class="text-white">Strategy 1</h3>
+
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<h4 class=" text-primary">Mixture 1</h4>
+
+								<div class="col-md-6">
+									<label for="customRange1" class="form-label">Oxygen percentage</label>
+									<input type="range" class="form-range" id="customRange1">
+								</div>
+								<div class="col-md-6">
+									<label for="customRange1" class="form-label">Helium percentage</label>
+									<input type="range" class="form-range" id="customRange1">
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<br>
+					<div class="card">
+						<div class="card-body">
+
+							<div class="row">
+								<h4 class=" text-primary">Mixture 2</h4>
+								<div class="col-md-6">
+									<label for="customRange1" class="form-label">Oxygen percentage</label>
+									<input type="range" class="form-range" id="customRange1">
+								</div>
+								<div class="col-md-6">
+									<label for="customRange1" class="form-label">Helium percentage</label>
+									<input type="range" class="form-range" id="customRange1">
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br>
+
+			<div class="card bg-primary">
+				<div class="card-body">
+					<h3 class="text-white">Strategy 2</h3>
+
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<h4 class=" text-primary">Mixture 1</h4>
+
+								<div class="col-md-6">
+									<label for="customRange1" class="form-label">Oxygen percentage</label>
+									<input type="range" class="form-range" id="customRange1">
+								</div>
+								<div class="col-md-6">
+									<label for="customRange1" class="form-label">Helium percentage</label>
+									<input type="range" class="form-range" id="customRange1">
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<br>
+					<div class="card">
+						<div class="card-body">
+							<div class="row">
+								<h4 class=" text-primary">Mixture 2</h4>
+
+								<div class="col-md-6">
+									<label for="customRange1" class="form-label">Oxygen percentage</label>
+									<input type="range" class="form-range" id="customRange1">
+								</div>
+								<div class="col-md-6">
+									<label for="customRange1" class="form-label">Helium percentage</label>
+									<input type="range" class="form-range" id="customRange1">
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<br>
+					<div class="card">
+						<div class="card-body">
+
+							<div class="row">
+								<h4 class=" text-primary">Mixture 3</h4>
+								<div class="col-md-6">
+									<label for="customRange1" class="form-label">Oxygen percentage</label>
+									<input type="range" class="form-range" id="customRange1">
+								</div>
+								<div class="col-md-6">
+									<label for="customRange1" class="form-label">Helium percentage</label>
+									<input type="range" class="form-range" id="customRange1">
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br>
+
+
+
+
+
+
+
+			<br>
+
+			<br>
+			<br>
+		</form>
+
+
 	</div>
-
-
 </body>
 
 </html>
