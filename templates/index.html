@@ -22,20 +22,22 @@
 		<h1 class=" text-primary">Dive planner</h1>
 		<canvas id="dive_profile"></canvas>
 		<br>
-		<h2 class=" text-primary">Mixtures</h2>
 
-		<form>
-
+		<form autocomplete="off">
 			<div class="row">
-				<div class="col-md-4">
-					<label class="form-label">Target depth (meters)</label>
-					<input type="text" name="target_depth" class="form-control form-floating" value="30">
+				<div class="col-md-5">
+					<label class="form-label">Target depth </label>
+					<output>30 meters</output>
+					<input type="range" value="30" max="150" name="target_depth" class="form-range"
+						oninput="this.previousElementSibling.value = this.value + ' meters'">
 				</div>
-				<div class="col-md-4">
-					<label class="form-label">Bottom time (minutes):</label>
-					<input type="text" name="bottom_time" class="form-control" value="30">
+				<div class="col-md-5">
+					<label for="customRange1" class="form-label">Bottom time </label>
+					<output>20 minutes</output>
+					<input type="range" value="20" name="bottom_time" class="form-range"
+						oninput="this.previousElementSibling.value = this.value + ' time'">
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-2">
 					<br>
 					<button class="btn btn-lg btn-primary" type="button">Plan dive</button>
 				</div>
