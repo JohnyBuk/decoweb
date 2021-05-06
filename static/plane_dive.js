@@ -23,11 +23,13 @@ $(function () {
 	};
 
 	let chart = new Chart($('canvas'), config);
+	let strategies = [new Strategy(new Gass), new Strategy(new Gass)];
 
-	let s = new Strategy(new Gass);
-	s.insertGass(new Gass);
-	s.insertGass(new Gass);
-	document.getElementById("strategies").innerHTML = s.render();
+	strategies[0].insertGass(new Gass);
+	strategies[1].insertGass(new Gass);
+	strategies[1].insertGass(new Gass);
+	renderStrategies(document.getElementById("strategies"), strategies);
+
 
 	$('button').click(function () {
 		$.post("/plane_dive", $('form').serialize(), function (response) {
@@ -37,6 +39,12 @@ $(function () {
 		});
 	});
 });
+
+function renderStrategies(element, strategies) {
+	let html = "";
+	strategies.forEach((strategy, index) => html += strategy.render(index + 1));
+	element.innerHTML = html;
+}
 
 
 class Gass {
@@ -75,10 +83,10 @@ class Strategy {
 		return gasses;
 	}
 
-	render() {
+	render(index) {
 		return `<div class="card bg-primary">
 					<div class="card-body">
-						<h3 class="text-white">Strategy 1</h3>
+						<h3 class="text-white">Strategy ${index}</h3>
 						${this.renderGasses()}
 					</div >
 				</div >
