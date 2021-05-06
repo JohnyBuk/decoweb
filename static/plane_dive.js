@@ -46,8 +46,12 @@ function renderStrategies(element, strategies) {
 	element.innerHTML = html;
 }
 
-
 class Gass {
+	constructor() {
+		this.oxygen = 21;
+		this.helium = 0;
+	}
+
 	render(index) {
 		return `<div class="card">
 					<div class="card-body">
@@ -55,13 +59,14 @@ class Gass {
 							<h4 class=" text-primary">Mixture ${index}</h4>
 
 							<div class="col-md-6">
-								<label for="customRange1" class="form-label">Oxygen percentage</label>
-								<input type="range" class="form-range" id="customRange1">
+								<label for="customRange1" class="form-label">Oxygen </label>
+								<output>${this.oxygen} %</output>
+								<input type="range" value="${this.oxygen}" class="form-range" id="customRange1" oninput="this.previousElementSibling.value = this.value + ' %'">
 							</div>
 							<div class="col-md-6">
-								<label for="customRange1" class="form-label">Helium percentage</label>
-								<input type="range" class="form-range" id="customRange1">
-
+								<label for="customRange1" class="form-label">Helium </label>
+								<output>${this.helium} %</output>
+								<input type="range" value="${this.helium}" class="form-range" id="customRange1"  oninput="this.previousElementSibling.value = this.value + ' %'">
 							</div>
 						</div>
 					</div>
