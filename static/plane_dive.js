@@ -43,6 +43,9 @@ $(function () {
 function renderStrategies(element, strategies) {
 	let html = "";
 	strategies.forEach((strategy, index) => html += strategy.render(index + 1));
+	html += `<div  class="text-end">
+				<button class="btn btn-primary" type="button">+Add strategy</button>
+			</div>`;
 	element.innerHTML = html;
 }
 
@@ -56,7 +59,7 @@ class Gass {
 		return `<div class="card">
 					<div class="card-body">
 						<div class="row">
-							<h4 class=" text-primary">Mixture ${index}</h4>
+							<h4 class=" text-primary">Gass ${index}</h4>
 
 							<div class="col-md-6">
 								<label for="customRange1" class="form-label">Oxygen </label>
@@ -93,6 +96,9 @@ class Strategy {
 					<div class="card-body">
 						<h3 class="text-white">Strategy ${index}</h3>
 						${this.renderGasses()}
+						<div  class="text-end">
+							<button class="btn btn-light text-primary" type="button">+Add gass</button>
+						</div>
 					</div >
 				</div >
 				<br>`;
