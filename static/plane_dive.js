@@ -1,37 +1,15 @@
 $(function () {
-	const data = {
-		datasets: [{
-			label: 'Dive profile',
-			data: [],
-			backgroundColor: 'blue',
-			borderColor: 'blue',
-		}],
-	};
+	func = function (i) {
+		strategies[i].insertGass(new Gass);
+		renderStrategies(element, strategies);
+	}
 
-	const config = {
-		type: 'scatter',
-		data: data,
-		options: {
-			showLine: true,
-			scales: {
-				x: {
-				}, y: {
-					reverse: true
-				}
-			}
-		}
-	};
+	const chart = new Chart($('canvas'), config);
+	const strategies = [new Strategy(new Gass), new Strategy(new Gass)];
+	const element = document.getElementById("strategies");
+	renderStrategies(element, strategies);
 
-	let chart = new Chart($('canvas'), config);
-	let strategies = [new Strategy(new Gass), new Strategy(new Gass)];
-
-	strategies[0].insertGass(new Gass);
-	strategies[1].insertGass(new Gass);
-	strategies[1].insertGass(new Gass);
-	renderStrategies(document.getElementById("strategies"), strategies);
-
-
-	$('button').click(function () {
+	$('#plan-dive').click(function () {
 		$.post("/plane_dive", $('form').serialize(), function (response) {
 			let data = JSON.parse(response);
 			chart.data.datasets[0].data = data;
@@ -42,7 +20,7 @@ $(function () {
 
 function renderStrategies(element, strategies) {
 	let html = "";
-	strategies.forEach((strategy, index) => html += strategy.render(index + 1));
+	strategies.forEach((strategy, index) => html += strategy.render(index));
 	html += `<div  class="text-end">
 				<button class="btn btn-primary" type="button">+Add strategy</button>
 			</div>`;
@@ -94,13 +72,33 @@ class Strategy {
 	render(index) {
 		return `<div class="card bg-primary">
 					<div class="card-body">
-						<h3 class="text-white">Strategy ${index}</h3>
+						<h3 class="text-white">Strategy ${index + 1}</h3>
 						${this.renderGasses()}
 						<div  class="text-end">
-							<button class="btn btn-light text-primary" type="button">+Add gass</button>
+							<button class="btn btn-light text-primary" onclick="func(${index})">+Add gass</button>
 						</div>
 					</div >
 				</div >
 				<br>`;
 	}
 }
+
+const config = {
+	type: 'scatter',
+	data: {
+		datasets: [{
+			label: 'Dive profile',
+			data: [],
+			backgroundColor: 'blue',
+			borderColor: 'blue',
+		}],
+	},
+	options: {
+		showLine: true,
+		scales: {
+			y: {
+				reverse: true
+			}
+		}
+	}
+};
