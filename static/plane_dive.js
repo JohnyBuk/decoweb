@@ -1,11 +1,16 @@
 $(function () {
-	func = function (i) {
+	addGass = function (i) {
 		strategies[i].insertGass(new Gass);
 		renderStrategies(element, strategies);
 	}
 
+	addStrategy = function () {
+		strategies.push(new Strategy(new Gass));
+		renderStrategies(element, strategies);
+	}
+
 	const chart = new Chart($('canvas'), config);
-	const strategies = [new Strategy(new Gass), new Strategy(new Gass)];
+	const strategies = [new Strategy(new Gass)];
 	const element = document.getElementById("strategies");
 	renderStrategies(element, strategies);
 
@@ -22,7 +27,7 @@ function renderStrategies(element, strategies) {
 	let html = "";
 	strategies.forEach((strategy, index) => html += strategy.render(index));
 	html += `<div  class="text-end">
-				<button class="btn btn-primary" type="button">+Add strategy</button>
+				<button class="btn btn-primary" onClick="addStrategy()">+Add strategy</button>
 			</div>`;
 	element.innerHTML = html;
 }
@@ -75,7 +80,7 @@ class Strategy {
 						<h3 class="text-white">Strategy ${index + 1}</h3>
 						${this.renderGasses()}
 						<div  class="text-end">
-							<button class="btn btn-light text-primary" onclick="func(${index})">+Add gass</button>
+							<button class="btn btn-light text-primary" onclick="addGass(${index})">+Add gass</button>
 						</div>
 					</div >
 				</div >
