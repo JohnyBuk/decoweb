@@ -28,6 +28,8 @@ $(function () {
 
 	let strategies = new Map();
 	addStrategy();
+	addStrategy();
+	addStrategy();
 
 	renderStrategies(element, strategies);
 
@@ -44,12 +46,23 @@ $(function () {
 });
 
 function renderStrategies(element, strategies) {
-	let html = "";
-	strategies.forEach((strategy, index) => html += strategy.render(index));
-	html += `<div class="text-end">
-				<button class="btn btn-primary" onClick="addStrategy()">+Add strategy</button>
-			</div>`;
-	element.innerHTML = html;
+	element.innerHTML = "";
+	let i = 1;
+
+	strategies.forEach((strategy, key) => {
+		let brn_remove_strategy = document.createElement('button');
+		brn_remove_strategy.className = "btn btn-light text-primary";
+		brn_remove_strategy.innerHTML = "Remove strategy";
+		brn_remove_strategy.onclick = () => { strategies.delete(key); renderStrategies(element, strategies); };
+		element.appendChild(strategy.render2(key, brn_remove_strategy));
+	});
+
+	let brn_add_strategy = document.createElement('button');
+	brn_add_strategy.className = "btn btn-primary";
+	brn_add_strategy.innerHTML = "+Add strategy";
+	brn_add_strategy.onclick = () =>  addStrategy();
+	element.appendChild(brn_add_strategy);
+
 }
 
 class Gass {
@@ -106,6 +119,46 @@ class Strategy {
 		let i = 0;
 		this.gasses.forEach((gass, key) => gasses += gass.render(this.id, key, ++i));
 		return gasses;
+	}
+
+	render2(id, btn_remove) {
+		let div_card = document.createElement('div');
+		div_card.className = "card bg-primary";
+		div_card.style = "margin-bottom: 1.5rem";
+
+		let card_body = document.createElement('div');
+		card_body.className = "card-body";
+		div_card.appendChild(card_body);
+
+		let header = document.createElement('h3');
+		header.className = "text-white";
+		header.innerHTML = "Strategy " + id;
+		card_body.appendChild(header);
+
+		let div_row = document.createElement('div');
+		div_row.className = "row";
+		card_body.appendChild(div_row);
+
+		let div_col_left = document.createElement('div');
+		div_col_left.className = "col-md-6";
+		div_col_left.appendChild(btn_remove);
+		div_row.appendChild(div_col_left);
+
+
+		let div_col_right = document.createElement('div');
+		div_col_right.className = "col-md-6";
+		div_row.appendChild(div_col_right);
+
+		let div_col_right_body = document.createElement('div');
+		div_col_right_body.className = "text-end";
+		div_col_right.appendChild(div_col_right_body);
+
+		let brn_add_gass = document.createElement('button');
+		brn_add_gass.className = "btn btn-light text-primary";
+		brn_add_gass.innerHTML = "Add gass";
+		div_col_right_body.appendChild(brn_add_gass);
+
+		return div_card;
 	}
 
 	render(index) {
