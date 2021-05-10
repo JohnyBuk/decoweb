@@ -5,22 +5,20 @@ $(function () {
 		renderStrategies(element, strategies);
 	}
 
-	removeGass = function (s, g) {
-		console.log("strategy", s);
-		console.log("gass", g);
-		strategies.get(s).removeGass(g);
+	removeGass = function (strategy_key, gass_key) {
+		strategies.get(strategy_key).removeGass(gass_key);
 		renderStrategies(element, strategies);
 	}
 
 	addStrategy = function () {
-		let id = Math.random();
-		strategies.set(id, new Strategy(new Gass, id)); // TODO check id not in strategies
+		const key = Math.random();
+		strategies.set(key, new Strategy(new Gass, key)); // TODO check id not in strategies
 		renderStrategies(element, strategies);
 	}
 
-	removeStrategy = function (i) {
+	removeStrategy = function (strategy_key) {
 		if (strategies.size > 1) {
-			strategies.delete(i);
+			strategies.delete(strategy_key);
 			renderStrategies(element, strategies);
 		}
 	}
