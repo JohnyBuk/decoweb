@@ -93,32 +93,27 @@ $(function () {
 	}
 
 	class Strategy {
-		constructor(gass, id) {
-			this.gasses = new Map();
-			this.insertGass(gass);
-			this.id = id
+		constructor() {
+			this.gasses = [];
+			this.gasses.push(new Gass);
 		}
 
-		insertGass(gass) {
-			this.gasses.set(Math.random(), gass); // TODO check id not in strategies
-		};
-
-		removeGass(id) {
-			if (this.gasses.size > 1) {
-				this.gasses.delete(id);
-			}
+		removeGass(gass) {
+			if (this.gasses.length === 1) return;
+			const index = this.gasses.indexOf(gass);
+			if (index !== -1)
+				this.gasses.splice(index, 1);
 		}
 
 		renderGasses() {
 			let div_gasses = document.createElement('div');
 			let i = 1;
 
-			this.gasses.forEach((gass, key) => {
+			this.gasses.forEach(gass => {
 				let btn_remove_gass = document.createElement('button');
 				btn_remove_gass.className = "btn btn-primary";
 				btn_remove_gass.innerText = "Remove gass";
-				btn_remove_gass.onclick = () => { this.gasses.delete(key); renderStrategies(); };
-
+				btn_remove_gass.onclick = () => { this.removeGass(gass); renderStrategies(); };
 				div_gasses.appendChild(gass.render(i++, btn_remove_gass));
 			});
 
@@ -160,53 +155,37 @@ $(function () {
 			let btn_add_gass = document.createElement('button');
 			btn_add_gass.className = "btn btn-light text-primary";
 			btn_add_gass.innerText = "Add gass";
-			btn_add_gass.onclick = () => { this.insertGass(new Gass); renderStrategies() };
+			btn_add_gass.onclick = () => { this.gasses.push(new Gass); renderStrategies() };
 			div_col_right_body.appendChild(btn_add_gass);
 
 			return div_card;
 		}
 	}
 
-	addGass = function (i) {
-		console.log(i);
-		strategies.get(i).insertGass(new Gass);
-		renderStrategies();
-	}
+	function removeStrategy(strategy) {
+		if (strategies.length === 1) return;
+		const index = strategies.indexOf(strategy);
+		if (index !== -1)
+			strategies.splice(index, 1);
 
-	removeGass = function (strategy_key, gass_key) {
-		strategies.get(strategy_key).removeGass(gass_key);
-		renderStrategies();
-	}
-
-	addStrategy = function () {
-		const key = Math.random();
-		strategies.set(key, new Strategy(new Gass, key)); // TODO check id not in strategies
-		renderStrategies();
-	}
-
-	removeStrategy = function (strategy_key) {
-		if (strategies.size > 1) {
-			strategies.delete(strategy_key);
-			renderStrategies();
-		}
 	}
 
 	const chart = new Chart($('canvas'), config);
 	const element = document.getElementById("strategies");
 
-	let strategies = new Map();
-	addStrategy();
+	let strategies = [];
+	strategies.push(new Strategy);
 	renderStrategies();
 
 	function renderStrategies() {
 		element.innerHTML = "";
 		let i = 1;
 
-		strategies.forEach((strategy, key) => {
+		strategies.forEach(strategy => {
 			let brn_remove_strategy = document.createElement('button');
 			brn_remove_strategy.className = "btn btn-light text-primary";
 			brn_remove_strategy.innerText = "Remove strategy";
-			brn_remove_strategy.onclick = () => { strategies.delete(key); renderStrategies(); };
+			brn_remove_strategy.onclick = () => { removeStrategy(strategy); renderStrategies(); };
 
 			element.appendChild(strategy.render(i++, brn_remove_strategy));
 		});
@@ -214,7 +193,7 @@ $(function () {
 		let brn_add_strategy = document.createElement('button');
 		brn_add_strategy.className = "btn btn-primary";
 		brn_add_strategy.innerText = "+Add strategy";
-		brn_add_strategy.onclick = () => addStrategy();
+		brn_add_strategy.onclick = () => { strategies.push(new Strategy); renderStrategies(); };
 		element.appendChild(brn_add_strategy);
 	}
 
