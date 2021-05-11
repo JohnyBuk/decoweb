@@ -19,36 +19,10 @@ $(function () {
 		}
 	};
 
-
 	class Gass {
 		constructor() {
 			this.oxygen = 21;
 			this.helium = 0;
-		}
-
-		render(strategy_id, gas_id, id) {
-			return `<div class="card">
-						<div class="card-body">
-							<div class="row">
-								<div class="col-md-6">
-									<h4 class=" text-primary">Gass ${gas_id}</h4>
-									<label for="customRange1" class="form-label">Oxygen </label>
-									<output>${this.oxygen} %</output>
-									<input type="range" value="${this.oxygen}" class="form-range" id="customRange1" oninput="this.previousElementSibling.value = this.value + ' %'">
-								</div>
-	
-								<div class="col-md-6">
-									<div  class="text-end">
-										<button class="btn btn-primary" onClick="removeGass(${strategy_id}, ${gas_id})">Remove gass</button>
-									</div>
-									<label for="customRange1" class="form-label">Helium </label>
-									<output>${this.helium} %</output>
-									<input type="range" value="${this.helium}" class="form-range" id="customRange1"  oninput="this.previousElementSibling.value = this.value + ' %'">
-								</div>
-							</div>
-						</div>
-					</div>
-					<br>`;
 		}
 
 		oxygen_label() {
@@ -59,7 +33,7 @@ $(function () {
 			return "Helium " + this.helium + " %";
 		}
 
-		render2(id, btn_remove_gass) {
+		render(id, btn_remove_gass) {
 			let div_card = document.createElement('div');
 			div_card.className = "card";
 			div_card.style = "margin-bottom: 1.5rem";
@@ -114,12 +88,9 @@ $(function () {
 			helium_slider.type = "range";
 			div_col_right.appendChild(helium_slider);
 
-
 			return div_card;
 		}
 	}
-
-
 
 	class Strategy {
 		constructor(gass, id) {
@@ -140,6 +111,7 @@ $(function () {
 
 		renderGasses() {
 			let div_gasses = document.createElement('div');
+			let i = 1;
 
 			this.gasses.forEach((gass, key) => {
 				let btn_remove_gass = document.createElement('button');
@@ -147,13 +119,13 @@ $(function () {
 				btn_remove_gass.innerText = "Remove gass";
 				btn_remove_gass.onclick = () => { this.gasses.delete(key); renderStrategies(); };
 
-				div_gasses.appendChild(gass.render2(key, btn_remove_gass));
+				div_gasses.appendChild(gass.render(i++, btn_remove_gass));
 			});
 
 			return div_gasses;
 		}
 
-		render2(id, btn_remove) {
+		render(id, btn_remove) {
 			let div_card = document.createElement('div');
 			div_card.className = "card bg-primary";
 			div_card.style = "margin-bottom: 1.5rem";
@@ -177,7 +149,6 @@ $(function () {
 			div_col_left.appendChild(btn_remove);
 			div_row.appendChild(div_col_left);
 
-
 			let div_col_right = document.createElement('div');
 			div_col_right.className = "col-md-6";
 			div_row.appendChild(div_col_right);
@@ -188,34 +159,13 @@ $(function () {
 
 			let btn_add_gass = document.createElement('button');
 			btn_add_gass.className = "btn btn-light text-primary";
-			btn_add_gass.innerText = "Add gass9";
-			//btn_add_gass.onclick = this.insertGass(new Gass);
+			btn_add_gass.innerText = "Add gass";
+			btn_add_gass.onclick = () => { this.insertGass(new Gass); renderStrategies() };
 			div_col_right_body.appendChild(btn_add_gass);
 
 			return div_card;
 		}
-
-		render(index) {
-			return `<div class="card bg-primary">
-						<div class="card-body">
-							<h3 class="text-white">Strategy ${this.id}</h3>
-							${this.renderGasses()}
-							<div class="row">
-								<div class="col-md-6">
-									<button class="btn btn-light text-primary" onClick="removeStrategy(${this.id})">Remove strategy</button>
-								</div>
-								<div class="col-md-6">
-									<div  class="text-end">
-										<button class="btn btn-light text-primary" onclick="addGass(${this.id})">Add gass</button>
-									</div>
-								</div>
-							</div>
-						</div >
-					</div >
-					<br>`;
-		}
 	}
-
 
 	addGass = function (i) {
 		console.log(i);
@@ -246,7 +196,6 @@ $(function () {
 
 	let strategies = new Map();
 	addStrategy();
-
 	renderStrategies();
 
 	function renderStrategies() {
@@ -259,7 +208,7 @@ $(function () {
 			brn_remove_strategy.innerText = "Remove strategy";
 			brn_remove_strategy.onclick = () => { strategies.delete(key); renderStrategies(); };
 
-			element.appendChild(strategy.render2(key, brn_remove_strategy));
+			element.appendChild(strategy.render(i++, brn_remove_strategy));
 		});
 
 		let brn_add_strategy = document.createElement('button');
@@ -268,9 +217,6 @@ $(function () {
 		brn_add_strategy.onclick = () => addStrategy();
 		element.appendChild(brn_add_strategy);
 	}
-
-	
-
 
 	$('#plan-dive').click(function () {
 		console.log();
@@ -283,6 +229,3 @@ $(function () {
 		});
 	});
 });
-
-
-
