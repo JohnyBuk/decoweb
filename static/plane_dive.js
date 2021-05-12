@@ -33,6 +33,10 @@ $(function () {
 			return "Helium " + this.helium + " %";
 		}
 
+		get_json() {
+			return { oxygen: this.oxygen, helium: this.helium };
+		}
+
 		render(id, btn_remove_gass) {
 			let div_card = document.createElement('div');
 			div_card.className = "card";
@@ -96,6 +100,14 @@ $(function () {
 		constructor() {
 			this.gasses = [];
 			this.gasses.push(new Gass);
+		}
+
+		get_json() {
+			let json = {
+				gasses: []
+			};
+			this.gasses.forEach(gass => json.gasses.push(gass.get_json()));
+			return json;
 		}
 
 		removeGass(gass) {
@@ -177,6 +189,12 @@ $(function () {
 	strategies.push(new Strategy);
 	renderStrategies();
 
+	function get_json() {
+		let json = { strategies: [] };
+		strategies.forEach(strategy => json.strategies.push(strategy.get_json()));
+		return json;
+	}
+
 	function renderStrategies() {
 		element.innerHTML = "";
 		let i = 1;
@@ -190,6 +208,7 @@ $(function () {
 			element.appendChild(strategy.render(i++, brn_remove_strategy));
 		});
 
+
 		let brn_add_strategy = document.createElement('button');
 		brn_add_strategy.className = "btn btn-primary";
 		brn_add_strategy.innerText = "+Add strategy";
@@ -198,13 +217,22 @@ $(function () {
 	}
 
 	$('#plan-dive').click(function () {
-		console.log();
-		let data = $('form').serialize() + "&oxygen=" + document.getElementById('customRange1').value;
-		console.log(data);
-		$.post("/plane_dive", data, function (response) {
-			let data = JSON.parse(response);
-			chart.data.datasets[0].data = data;
-			chart.update();
+		json = get_json();
+		json["target_depth"] = document.getElementById('target_depth').value;
+		json["bottom_time"] = document.getElementById('bottom_time').value;
+		$.ajax({
+			url: '/plane_dive',
+			contentType: "application/json",
+			type: 'POST',
+			data: JSON.stringify(json),
+			success: function (response) {
+				let data = JSON.parse(response);
+				chart.data.datasets[0].data = data;
+				chart.update();
+			},
+			error: function (error) {
+				console.log(error);
+			}
 		});
 	});
 });
