@@ -103,10 +103,8 @@ $(function () {
 		}
 
 		get_json() {
-			let json = {
-				gasses: []
-			};
-			this.gasses.forEach(gass => json.gasses.push(gass.get_json()));
+			let json = [];
+			this.gasses.forEach(gass => json.push(gass.get_json()));
 			return json;
 		}
 
