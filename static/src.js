@@ -19,7 +19,7 @@ $(function () {
 		}
 	};
 
-	class Gass {
+	class Gas {
 		constructor() {
 			this.oxygen = 21;
 			this.helium = 0;
@@ -37,7 +37,7 @@ $(function () {
 			return { oxygen: this.oxygen, helium: this.helium };
 		}
 
-		render(id, btnRemoveGass) {
+		render(id, btnRemoveGas) {
 			let divCard = document.createElement('div');
 			divCard.className = "card";
 			divCard.style = "margin-bottom: 1.5rem";
@@ -56,7 +56,7 @@ $(function () {
 
 			let header = document.createElement('h4');
 			header.className = "text-primary";
-			header.innerText = "Gass " + id;
+			header.innerText = "Gas " + id;
 			divColLeft.appendChild(header);
 
 			let oxygenLbl = document.createElement('label');
@@ -77,7 +77,7 @@ $(function () {
 
 			let divColRightBody = document.createElement('div');
 			divColRightBody.className = "text-end";
-			divColRightBody.appendChild(btnRemoveGass);
+			divColRightBody.appendChild(btnRemoveGas);
 			divColRight.appendChild(divColRightBody);
 
 			let heliumLbl = document.createElement('label');
@@ -98,36 +98,36 @@ $(function () {
 
 	class Strategy {
 		constructor() {
-			this.gasses = [];
-			this.gasses.push(new Gass);
+			this.gases = [];
+			this.gases.push(new Gas);
 		}
 
 		getJson() {
 			let json = [];
-			this.gasses.forEach(gass => json.push(gass.getJson()));
+			this.gases.forEach(gas => json.push(gas.getJson()));
 			return json;
 		}
 
-		removeGass(gass) {
-			if (this.gasses.length === 1) return;
-			const index = this.gasses.indexOf(gass);
+		removeGas(gas) {
+			if (this.gases.length === 1) return;
+			const index = this.gases.indexOf(gas);
 			if (index !== -1)
-				this.gasses.splice(index, 1);
+				this.gases.splice(index, 1);
 		}
 
-		renderGasses() {
-			let divGasses = document.createElement('div');
+		renderGases() {
+			let divGases = document.createElement('div');
 			let i = 1;
 
-			this.gasses.forEach(gass => {
-				let btnRemoveGass = document.createElement('button');
-				btnRemoveGass.className = "btn btn-primary";
-				btnRemoveGass.innerText = "Remove gass";
-				btnRemoveGass.onclick = () => { this.removeGass(gass); renderStrategies(); };
-				divGasses.appendChild(gass.render(i++, btnRemoveGass));
+			this.gases.forEach(gas => {
+				let btnRemoveGas = document.createElement('button');
+				btnRemoveGas.className = "btn btn-primary";
+				btnRemoveGas.innerText = "Remove gas";
+				btnRemoveGas.onclick = () => { this.removeGas(gas); renderStrategies(); };
+				divGases.appendChild(gas.render(i++, btnRemoveGas));
 			});
 
-			return divGasses;
+			return divGases;
 		}
 
 		render(id, btnRemove) {
@@ -143,7 +143,7 @@ $(function () {
 			header.className = "text-white";
 			header.innerText = "Strategy " + id;
 			divCardBody.appendChild(header);
-			divCardBody.appendChild(this.renderGasses());
+			divCardBody.appendChild(this.renderGases());
 
 			let divRow = document.createElement('div');
 			divRow.className = "row";
@@ -162,11 +162,11 @@ $(function () {
 			divColRightBody.className = "text-end";
 			divColRight.appendChild(divColRightBody);
 
-			let btnAddGass = document.createElement('button');
-			btnAddGass.className = "btn btn-light text-primary";
-			btnAddGass.innerText = "Add gass";
-			btnAddGass.onclick = () => { this.gasses.push(new Gass); renderStrategies() };
-			divColRightBody.appendChild(btnAddGass);
+			let btnAddGas = document.createElement('button');
+			btnAddGas.className = "btn btn-light text-primary";
+			btnAddGas.innerText = "Add gas";
+			btnAddGas.onclick = () => { this.gases.push(new Gas); renderStrategies() };
+			divColRightBody.appendChild(btnAddGas);
 
 			return divCard;
 		}
