@@ -25,74 +25,74 @@ $(function () {
 			this.helium = 0;
 		}
 
-		oxygen_label() {
+		oxygenLabel() {
 			return "Oxygen " + this.oxygen + " %";
 		}
 
-		helium_label() {
+		heliumLabel() {
 			return "Helium " + this.helium + " %";
 		}
 
-		get_json() {
+		getJson() {
 			return { oxygen: this.oxygen, helium: this.helium };
 		}
 
-		render(id, btn_remove_gass) {
-			let div_card = document.createElement('div');
-			div_card.className = "card";
-			div_card.style = "margin-bottom: 1.5rem";
+		render(id, btnRemoveGass) {
+			let divCard = document.createElement('div');
+			divCard.className = "card";
+			divCard.style = "margin-bottom: 1.5rem";
 
-			let card_body = document.createElement('div');
-			card_body.className = "card-body";
-			div_card.appendChild(card_body);
+			let divCardBody = document.createElement('div');
+			divCardBody.className = "card-body";
+			divCard.appendChild(divCardBody);
 
-			let div_row = document.createElement('div');
-			div_row.className = "row";
-			card_body.appendChild(div_row);
+			let divRow = document.createElement('div');
+			divRow.className = "row";
+			divCardBody.appendChild(divRow);
 
-			let div_col_left = document.createElement('div');
-			div_col_left.className = "col-md-6";
-			div_row.appendChild(div_col_left);
+			let divColLeft = document.createElement('div');
+			divColLeft.className = "col-md-6";
+			divRow.appendChild(divColLeft);
 
 			let header = document.createElement('h4');
 			header.className = "text-primary";
 			header.innerText = "Gass " + id;
-			div_col_left.appendChild(header);
+			divColLeft.appendChild(header);
 
-			let oxygen_lbl = document.createElement('label');
-			oxygen_lbl.className = "form-label";
-			oxygen_lbl.innerText = this.oxygen_label();
-			div_col_left.appendChild(oxygen_lbl);
+			let oxygenLbl = document.createElement('label');
+			oxygenLbl.className = "form-label";
+			oxygenLbl.innerText = this.oxygenLabel();
+			divColLeft.appendChild(oxygenLbl);
 
-			let oxygen_slider = document.createElement('input');
-			oxygen_slider.oninput = () => { this.oxygen = oxygen_slider.value; oxygen_lbl.innerText = this.oxygen_label(); };
-			oxygen_slider.value = this.oxygen;
-			oxygen_slider.className = "form-range";
-			oxygen_slider.type = "range";
-			div_col_left.appendChild(oxygen_slider);
+			let oxygenSlider = document.createElement('input');
+			oxygenSlider.oninput = () => { this.oxygen = oxygenSlider.value; oxygenLbl.innerText = this.oxygenLabel(); };
+			oxygenSlider.value = this.oxygen;
+			oxygenSlider.className = "form-range";
+			oxygenSlider.type = "range";
+			divColLeft.appendChild(oxygenSlider);
 
-			let div_col_right = document.createElement('div');
-			div_col_right.className = "col-md-6";
-			div_row.appendChild(div_col_right);
+			let divColRight = document.createElement('div');
+			divColRight.className = "col-md-6";
+			divRow.appendChild(divColRight);
 
-			let div_col_right_body = document.createElement('div');
-			div_col_right_body.className = "text-end";
-			div_col_right_body.appendChild(btn_remove_gass);
-			div_col_right.appendChild(div_col_right_body);
+			let divColRightBody = document.createElement('div');
+			divColRightBody.className = "text-end";
+			divColRightBody.appendChild(btnRemoveGass);
+			divColRight.appendChild(divColRightBody);
 
-			let helium_lbl = document.createElement('label');
-			helium_lbl.className = "form-label";
-			helium_lbl.innerText = this.helium_label();
-			div_col_right.appendChild(helium_lbl);
+			let heliumLbl = document.createElement('label');
+			heliumLbl.className = "form-label";
+			heliumLbl.innerText = this.heliumLabel();
+			divColRight.appendChild(heliumLbl);
 
-			let helium_slider = document.createElement('input');
-			helium_slider.oninput = () => { this.helium = helium_slider.value; helium_lbl.innerText = this.helium_label(); };
-			helium_slider.value = this.helium;
-			helium_slider.className = "form-range";
-			helium_slider.type = "range";
-			div_col_right.appendChild(helium_slider);
+			let heliumSlider = document.createElement('input');
+			heliumSlider.oninput = () => { this.helium = heliumSlider.value; heliumLbl.innerText = this.heliumLabel(); };
+			heliumSlider.value = this.helium;
+			heliumSlider.className = "form-range";
+			heliumSlider.type = "range";
+			divColRight.appendChild(heliumSlider);
 
-			return div_card;
+			return divCard;
 		}
 	}
 
@@ -102,9 +102,9 @@ $(function () {
 			this.gasses.push(new Gass);
 		}
 
-		get_json() {
+		getJson() {
 			let json = [];
-			this.gasses.forEach(gass => json.push(gass.get_json()));
+			this.gasses.forEach(gass => json.push(gass.getJson()));
 			return json;
 		}
 
@@ -116,59 +116,59 @@ $(function () {
 		}
 
 		renderGasses() {
-			let div_gasses = document.createElement('div');
+			let divGasses = document.createElement('div');
 			let i = 1;
 
 			this.gasses.forEach(gass => {
-				let btn_remove_gass = document.createElement('button');
-				btn_remove_gass.className = "btn btn-primary";
-				btn_remove_gass.innerText = "Remove gass";
-				btn_remove_gass.onclick = () => { this.removeGass(gass); renderStrategies(); };
-				div_gasses.appendChild(gass.render(i++, btn_remove_gass));
+				let btnRemoveGass = document.createElement('button');
+				btnRemoveGass.className = "btn btn-primary";
+				btnRemoveGass.innerText = "Remove gass";
+				btnRemoveGass.onclick = () => { this.removeGass(gass); renderStrategies(); };
+				divGasses.appendChild(gass.render(i++, btnRemoveGass));
 			});
 
-			return div_gasses;
+			return divGasses;
 		}
 
-		render(id, btn_remove) {
-			let div_card = document.createElement('div');
-			div_card.className = "card bg-primary";
-			div_card.style = "margin-bottom: 1.5rem";
+		render(id, btnRemove) {
+			let divCard = document.createElement('div');
+			divCard.className = "card bg-primary";
+			divCard.style = "margin-bottom: 1.5rem";
 
-			let card_body = document.createElement('div');
-			card_body.className = "card-body";
-			div_card.appendChild(card_body);
+			let divCardBody = document.createElement('div');
+			divCardBody.className = "card-body";
+			divCard.appendChild(divCardBody);
 
 			let header = document.createElement('h3');
 			header.className = "text-white";
 			header.innerText = "Strategy " + id;
-			card_body.appendChild(header);
-			card_body.appendChild(this.renderGasses());
+			divCardBody.appendChild(header);
+			divCardBody.appendChild(this.renderGasses());
 
-			let div_row = document.createElement('div');
-			div_row.className = "row";
-			card_body.appendChild(div_row);
+			let divRow = document.createElement('div');
+			divRow.className = "row";
+			divCardBody.appendChild(divRow);
 
-			let div_col_left = document.createElement('div');
-			div_col_left.className = "col-md-6";
-			div_col_left.appendChild(btn_remove);
-			div_row.appendChild(div_col_left);
+			let divColLeft = document.createElement('div');
+			divColLeft.className = "col-md-6";
+			divColLeft.appendChild(btnRemove);
+			divRow.appendChild(divColLeft);
 
-			let div_col_right = document.createElement('div');
-			div_col_right.className = "col-md-6";
-			div_row.appendChild(div_col_right);
+			let divColRight = document.createElement('div');
+			divColRight.className = "col-md-6";
+			divRow.appendChild(divColRight);
 
-			let div_col_right_body = document.createElement('div');
-			div_col_right_body.className = "text-end";
-			div_col_right.appendChild(div_col_right_body);
+			let divColRightBody = document.createElement('div');
+			divColRightBody.className = "text-end";
+			divColRight.appendChild(divColRightBody);
 
-			let btn_add_gass = document.createElement('button');
-			btn_add_gass.className = "btn btn-light text-primary";
-			btn_add_gass.innerText = "Add gass";
-			btn_add_gass.onclick = () => { this.gasses.push(new Gass); renderStrategies() };
-			div_col_right_body.appendChild(btn_add_gass);
+			let btnAddGass = document.createElement('button');
+			btnAddGass.className = "btn btn-light text-primary";
+			btnAddGass.innerText = "Add gass";
+			btnAddGass.onclick = () => { this.gasses.push(new Gass); renderStrategies() };
+			divColRightBody.appendChild(btnAddGass);
 
-			return div_card;
+			return divCard;
 		}
 	}
 
@@ -187,7 +187,7 @@ $(function () {
 	strategies.push(new Strategy);
 	renderStrategies();
 
-	function get_json() {
+	function getJson() {
 		let json = { strategies: [] };
 		strategies.forEach(strategy => json.strategies.push(strategy.get_json()));
 		return json;
@@ -198,24 +198,24 @@ $(function () {
 		let i = 1;
 
 		strategies.forEach(strategy => {
-			let brn_remove_strategy = document.createElement('button');
-			brn_remove_strategy.className = "btn btn-light text-primary";
-			brn_remove_strategy.innerText = "Remove strategy";
-			brn_remove_strategy.onclick = () => { removeStrategy(strategy); renderStrategies(); };
+			let brnRemoveStrategy = document.createElement('button');
+			brnRemoveStrategy.className = "btn btn-light text-primary";
+			brnRemoveStrategy.innerText = "Remove strategy";
+			brnRemoveStrategy.onclick = () => { removeStrategy(strategy); renderStrategies(); };
 
-			element.appendChild(strategy.render(i++, brn_remove_strategy));
+			element.appendChild(strategy.render(i++, brnRemoveStrategy));
 		});
 
 
-		let brn_add_strategy = document.createElement('button');
-		brn_add_strategy.className = "btn btn-primary";
-		brn_add_strategy.innerText = "+Add strategy";
-		brn_add_strategy.onclick = () => { strategies.push(new Strategy); renderStrategies(); };
-		element.appendChild(brn_add_strategy);
+		let brnAddStrategy = document.createElement('button');
+		brnAddStrategy.className = "btn btn-primary";
+		brnAddStrategy.innerText = "+Add strategy";
+		brnAddStrategy.onclick = () => { strategies.push(new Strategy); renderStrategies(); };
+		element.appendChild(brnAddStrategy);
 	}
 
 	$('#plan-dive').click(function () {
-		json = get_json();
+		json = getJson();
 		json["target_depth"] = document.getElementById('target_depth').value;
 		json["bottom_time"] = document.getElementById('bottom_time').value;
 		$.ajax({
