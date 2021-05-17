@@ -1,10 +1,13 @@
 import flask
 import decotengu
+import json
 
-engine = decotengu.create()
-engine.add_gas(0, 21)
 
 app = flask.Flask(__name__)
+
+
+def preasure_to_depth(preasure):
+    return 10.0 * (preasure - 1.0)
 
 
 def preasure_to_depth(preasure):
@@ -18,8 +21,30 @@ def index():
 
 @app.route('/plane_dive', methods=['POST'])
 def plane_dive():
-    target_depth = int(flask.request.form['target_depth'])
-    bottom_time = int(flask.request.form['bottom_time'])
+    data = flask.request.json
+    print(json.dumps(data, indent=4))
+    target_depth = int(data['target_depth'])
+    bottom_time = int(data['bottom_time'])
+    oxygen = int(data["strategies"][0][0]['oxygen'])
+    helium = int(data["strategies"][0][0]['helium'])
+
+    engine = decotengu.create()
+
+    bob = False
+
+    for strategy in data["strategies"]:
+        for gass in strategy:
+            oxygen = int(gass["oxygen"])
+            helium = int(gass["helium"])
+            preasure = 1.6/(oxygen/100)
+            switch_depth = preasure_to_depth(preasure)
+            print(preasure, switch_depth)
+
+            if bob:
+                engine.add_gas(switch_depth, oxygen, helium)
+            else:
+                engine.add_gas(0, oxygen, helium)
+                bob = True
 
     profile = engine.calculate(target_depth, bottom_time)
     data = []
