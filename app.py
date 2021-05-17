@@ -19,12 +19,12 @@ def index():
     return flask.render_template('index.html')
 
 
-@app.route('/plane_dive', methods=['POST'])
+@app.route('/plan-dive', methods=['POST'])
 def plane_dive():
     data = flask.request.json
     print(json.dumps(data, indent=4))
-    target_depth = int(data['target_depth'])
-    bottom_time = int(data['bottom_time'])
+    target_depth = int(data['target-depth'])
+    bottom_time = int(data['bottom-time'])
     oxygen = int(data["strategies"][0][0]['oxygen'])
     helium = int(data["strategies"][0][0]['helium'])
 

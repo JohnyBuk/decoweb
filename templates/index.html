@@ -13,14 +13,14 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js"
 		integrity="sha512-VMsZqo0ar06BMtg0tPsdgRADvl0kDHpTbugCBBrL55KmucH6hP9zWdLIWY//OTfMnzz6xWQRxQqsUFefwHuHyg=="
 		crossorigin="anonymous"></script>
-	<script src="static/plane_dive.js"></script>
+	<script src="static/src.js"></script>
 </head>
 
 <body class="bg-light">
 	<div class="container">
 		<br>
 		<h1 class=" text-primary">Dive planner</h1>
-		<canvas id="dive_profile"></canvas>
+		<canvas id="dive-profile"></canvas>
 		<br>
 
 		<form autocomplete="off">
@@ -28,13 +28,13 @@
 				<div class="col-md-5">
 					<label class="form-label">Target depth </label>
 					<output>30 meters</output>
-					<input type="range" value="30" max="150" name="target_depth" id="target_depth" class="form-range"
+					<input type="range" value="30" max="150" name="target-depth" id="target-depth" class="form-range"
 						oninput="this.previousElementSibling.value = this.value + ' meters'">
 				</div>
 				<div class="col-md-5">
 					<label for="customRange1" class="form-label">Bottom time </label>
 					<output>20 minutes</output>
-					<input type="range" value="20" name="bottom_time" id="bottom_time" class="form-range"
+					<input type="range" value="20" name="bottom-time" id="bottom-time" class="form-range"
 						oninput="this.previousElementSibling.value = this.value + ' time'">
 				</div>
 				<div class="col-md-2 text-end">
