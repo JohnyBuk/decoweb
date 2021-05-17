@@ -189,7 +189,7 @@ $(function () {
 
 	function getJson() {
 		let json = { strategies: [] };
-		strategies.forEach(strategy => json.strategies.push(strategy.get_json()));
+		strategies.forEach(strategy => json.strategies.push(strategy.getJson()));
 		return json;
 	}
 
@@ -216,10 +216,10 @@ $(function () {
 
 	$('#plan-dive').click(function () {
 		json = getJson();
-		json["target_depth"] = document.getElementById('target_depth').value;
-		json["bottom_time"] = document.getElementById('bottom_time').value;
+		json["target-depth"] = document.getElementById('target-depth').value;
+		json["bottom-time"] = document.getElementById('bottom-time').value;
 		$.ajax({
-			url: '/plane_dive',
+			url: '/plan-dive',
 			contentType: "application/json",
 			type: 'POST',
 			data: JSON.stringify(json),
