@@ -1,17 +1,8 @@
 import flask
 import decotengu
-import json
 
 
 app = flask.Flask(__name__)
-
-
-def preasure_to_depth(preasure):
-    return 10.0 * (preasure - 1.0)
-
-
-def preasure_to_depth(preasure):
-    return 10.0 * (preasure - 1.0)
 
 
 @app.route('/')
@@ -22,43 +13,45 @@ def index():
 @app.route('/plan-dive', methods=['POST'])
 def plane_dive():
     data = flask.request.json
-    print(json.dumps(data, indent=4))
+    print(flask.json.dumps(data, indent=2))
     target_depth = int(data['target-depth'])
     bottom_time = int(data['bottom-time'])
-    oxygen = int(data["strategies"][0][0]['oxygen'])
-    helium = int(data["strategies"][0][0]['helium'])
 
-    engine = decotengu.create()
 
-    bob = False
+    result = []
 
     for strategy in data["strategies"]:
+        engine = decotengu.create()
         for gass in strategy:
             oxygen = int(gass["oxygen"])
             helium = int(gass["helium"])
-            preasure = 1.6/(oxygen/100)
-            switch_depth = preasure_to_depth(preasure)
-            print(preasure, switch_depth)
-
-            if bob:
-                engine.add_gas(switch_depth, oxygen, helium)
-            else:
+            if not engine._gas_list:  # no gas in engine
                 engine.add_gas(0, oxygen, helium)
-                bob = True
 
-    profile = engine.calculate(target_depth, bottom_time)
-    data = []
+            else:
+                preasure = 1.6/(oxygen/100.0)
+                
+                switch_depth = engine._to_depth(preasure)
+                print(preasure, switch_depth)
+                if target_depth > switch_depth:
+                    engine.add_gas(switch_depth, oxygen, helium)
 
-    for step in profile:
-        print(step)
-        data.append({"y": preasure_to_depth(step.abs_p), "x": step.time})
+        print(engine._gas_list)
+        profile = engine.calculate(target_depth, bottom_time)
 
-    # print(data)
+        tt = []
+        for step in profile:
+            print(step)
+            tt.append({"y": engine._to_depth(step.abs_p), "x": step.time})
+        result.append(tt)
 
-    for stop in engine.deco_table:
-        print(stop)
 
-    return flask.json.dumps(data)
+        for stop in engine.deco_table:
+            print(stop)
+
+    result = flask.json.dumps(result, indent=2)
+    print(result)
+    return result
 
 
 if __name__ == "__main__":
