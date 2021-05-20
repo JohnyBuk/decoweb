@@ -221,25 +221,25 @@ $(function () {
 		element.appendChild(brnAddStrategy);
 	}
 
+
+
 	$('#plan-dive').click(function () {
 		json = getJson();
 		json["target-depth"] = document.getElementById('target-depth').value;
 		json["bottom-time"] = document.getElementById('bottom-time').value;
-		$.ajax({
-			url: '/plan-dive',
-			contentType: "application/json",
-			type: 'POST',
-			data: JSON.stringify(json),
-			success: function (response) {
-				let data = JSON.parse(response);
-				chart.data.datasets = [];
 
-				data.forEach((strategy, i) => chart.data.datasets.push({ data: strategy, label: "Dataset " + (i + 1), borderColor: colors[i], backgroundColor: colors[i] }));
-				chart.update();
+		fetch('/plan-dive', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
 			},
-			error: function (error) {
-				console.log(error);
-			}
+			body: JSON.stringify(json) // body data type must match "Content-Type" header
+		}).then(response => response.json()).then(data => {
+			console.log(data); chart.data.datasets = [];
+			data.forEach((strategy, i) => chart.data.datasets.push({ data: strategy, label: "Dataset " + (i + 1), borderColor: colors[i], backgroundColor: colors[i] }));
+			chart.update();
 		});
 	});
 });
+
+
