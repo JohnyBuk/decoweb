@@ -1,16 +1,15 @@
-import { Strategy } from './strategy.js';
 import { renderStrategies } from './renderStrategies.js';
-import { config, colors, getJson } from './plot.js';
-
+import { chart_config } from './chart_config.js';
+import { Strategy } from './strategy.js';
+import { getJson } from './getJson.js';
+import { colors } from './colors.js';
 
 window.strategies_element = document.getElementById('strategies');
 window.strategies_list = [];
 strategies_list.push(new Strategy);
 
-const chart = new Chart(document.getElementById('dive-profile'), config);
+const chart = new Chart(document.getElementById('dive-profile'), chart_config);
 renderStrategies();
-
-
 
 document.getElementById('plan-dive').onclick = () => {
 	let json = getJson();
@@ -25,7 +24,16 @@ document.getElementById('plan-dive').onclick = () => {
 		body: JSON.stringify(json)
 	}).then(response => response.json()).then(data => {
 		chart.data.datasets = [];
-		data.forEach((strategy, i) => chart.data.datasets.push({ data: strategy, label: 'Dataset ' + (i + 1), borderColor: colors[i], backgroundColor: colors[i] }));
+
+		data.forEach((strategy, i) => {
+			const strategy_data = {
+				data: strategy,
+				label: 'Strategy ' + (i + 1),
+				borderColor: colors[i],
+				backgroundColor: colors[i]
+			};
+			chart.data.datasets.push(strategy_data);
+		});
 		chart.update();
 	});
 }
