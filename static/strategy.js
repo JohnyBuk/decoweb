@@ -1,5 +1,5 @@
-import {Gas} from './gas.js';
-import {renderStrategies} from './renderStrategies.js';
+import { Gas } from './gas.js';
+import { renderStrategies } from './renderStrategies.js';
 
 export class Strategy {
 	constructor() {
@@ -22,14 +22,13 @@ export class Strategy {
 
 	renderGases() {
 		let divGases = document.createElement('div');
-		let i = 1;
 
-		this.gases.forEach(gas => {
+		this.gases.forEach((gas, i) => {
 			let btnRemoveGas = document.createElement('button');
 			btnRemoveGas.className = 'btn btn-primary';
 			btnRemoveGas.innerText = 'Remove gas';
 			btnRemoveGas.onclick = () => { this.removeGas(gas); renderStrategies(); };
-			divGases.appendChild(gas.render(i++, btnRemoveGas));
+			divGases.appendChild(gas.render(i + 1, btnRemoveGas));
 		});
 
 		return divGases;

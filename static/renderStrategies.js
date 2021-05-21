@@ -2,15 +2,14 @@ import { Strategy } from './strategy.js';
 
 export function renderStrategies() {
 	strategies_element.innerHTML = '';
-	let i = 1;
 
-	strategies_list.forEach(strategy => {
+	strategies_list.forEach((strategy, i) => {
 		let brnRemoveStrategy = document.createElement('button');
 		brnRemoveStrategy.className = 'btn btn-light text-primary';
 		brnRemoveStrategy.innerText = 'Remove strategy';
 		brnRemoveStrategy.onclick = () => { removeStrategy(strategy); renderStrategies(); };
 
-		strategies_element.appendChild(strategy.render(i++, brnRemoveStrategy));
+		strategies_element.appendChild(strategy.render(i + 1, brnRemoveStrategy));
 	});
 
 
