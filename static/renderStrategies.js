@@ -1,28 +1,28 @@
 import { Strategy } from './strategy.js';
 
 export function renderStrategies() {
-	strategies_element.innerHTML = '';
+	strategiesElement.innerHTML = '';
 
-	strategies_list.forEach((strategy, i) => {
+	strategiesList.forEach((strategy, i) => {
 		let brnRemoveStrategy = document.createElement('button');
 		brnRemoveStrategy.className = 'btn btn-light text-primary';
 		brnRemoveStrategy.innerText = 'Remove strategy';
 		brnRemoveStrategy.onclick = () => { removeStrategy(strategy); renderStrategies(); };
 
-		strategies_element.appendChild(strategy.render(i + 1, brnRemoveStrategy));
+		strategiesElement.appendChild(strategy.render(i + 1, brnRemoveStrategy));
 	});
 
 
 	let brnAddStrategy = document.createElement('button');
 	brnAddStrategy.className = 'btn btn-primary';
 	brnAddStrategy.innerText = '+Add strategy';
-	brnAddStrategy.onclick = () => { strategies_list.push(new Strategy); renderStrategies(); };
-	strategies_element.appendChild(brnAddStrategy);
+	brnAddStrategy.onclick = () => { strategiesList.push(new Strategy); renderStrategies(); };
+	strategiesElement.appendChild(brnAddStrategy);
 }
 
 function removeStrategy(strategy) {
-	if (strategies_list.length === 1) return;
-	const index = strategies_list.indexOf(strategy);
+	if (strategiesList.length === 1) return;
+	const index = strategiesList.indexOf(strategy);
 	if (index !== -1)
-		strategies_list.splice(index, 1);
+		strategiesList.splice(index, 1);
 }

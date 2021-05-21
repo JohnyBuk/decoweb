@@ -1,14 +1,14 @@
 import { renderStrategies } from './renderStrategies.js';
-import { chart_config } from './chart_config.js';
+import { chartConfig } from './chartConfig.js';
 import { Strategy } from './strategy.js';
 import { getJson } from './getJson.js';
 import { colors } from './colors.js';
 
-window.strategies_element = document.getElementById('strategies');
-window.strategies_list = [];
-strategies_list.push(new Strategy);
+window.strategiesElement = document.getElementById('strategies');
+window.strategiesList = [];
+strategiesList.push(new Strategy);
 
-const chart = new Chart(document.getElementById('dive-profile'), chart_config);
+const chart = new Chart(document.getElementById('dive-profile'), chartConfig);
 renderStrategies();
 
 document.getElementById('plan-dive').onclick = () => {

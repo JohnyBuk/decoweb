@@ -1,4 +1,4 @@
-export const chart_config = {
+export const chartConfig = {
     type: 'scatter',
     data: {
         datasets: [],
