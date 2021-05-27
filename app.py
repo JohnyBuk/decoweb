@@ -17,7 +17,6 @@ def plane_dive():
     target_depth = int(data['target-depth'])
     bottom_time = int(data['bottom-time'])
 
-
     result = []
 
     for strategy in data["strategies"]:
@@ -30,8 +29,8 @@ def plane_dive():
 
             else:
                 preasure = 1.6/(oxygen/100.0)
-                
-                switch_depth = engine._to_depth(preasure)
+
+                switch_depth = (engine._to_depth(preasure) // 3) * 3
                 print(preasure, switch_depth)
                 if target_depth > switch_depth:
                     engine.add_gas(switch_depth, oxygen, helium)
@@ -44,7 +43,6 @@ def plane_dive():
             print(step)
             tt.append({"y": engine._to_depth(step.abs_p), "x": step.time})
         result.append(tt)
-
 
         for stop in engine.deco_table:
             print(stop)
