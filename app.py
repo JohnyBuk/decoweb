@@ -13,7 +13,6 @@ def index():
 @app.route('/plan-dive', methods=['POST'])
 def plane_dive():
     data = flask.request.json
-    print(flask.json.dumps(data, indent=2))
     target_depth = int(data['target-depth'])
     bottom_time = int(data['bottom-time'])
 
@@ -31,24 +30,17 @@ def plane_dive():
                 preasure = 1.6/(oxygen/100.0)
 
                 switch_depth = (engine._to_depth(preasure) // 3) * 3
-                print(preasure, switch_depth)
                 if target_depth > switch_depth:
                     engine.add_gas(switch_depth, oxygen, helium)
 
-        print(engine._gas_list)
         profile = engine.calculate(target_depth, bottom_time)
 
-        tt = []
+        data = []
         for step in profile:
-            print(step)
-            tt.append({"y": engine._to_depth(step.abs_p), "x": step.time})
-        result.append(tt)
-
-        for stop in engine.deco_table:
-            print(stop)
+            data.append({"y": engine._to_depth(step.abs_p), "x": step.time})
+        result.append(data)
 
     result = flask.json.dumps(result, indent=2)
-    print(result)
     return result
 
 
