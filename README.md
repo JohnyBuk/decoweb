@@ -1,6 +1,9 @@
 # Dive planner
 
-This web application is designed to assist divers in exploring and comparing different breathing gas mixtures. It provides the ability to simulate and compare dive profiles and decompression stops based on the selected gas mixtures.
+
+[http://decoweb.pythonanywhere.com](http://decoweb.pythonanywhere.com)
+
+This web application is a frontend for the Python library [DecoTengu](https://wrobell.dcmod.org/decotengu), designed to assist divers in exploring and comparing different breathing gas mixtures. It provides the ability to simulate and compare dive profiles and decompression stops based on the selected gas mixtures.
 
 :warning: WARNING          
 This application is not a substitute for proper training in deep diving. Using this application without adequate knowledge and training can be dangerous and potentially life-threatening. Always seek proper certification and training before attempting deep dives.    
