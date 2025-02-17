@@ -1,15 +1,20 @@
 import { Box, Button, Typography } from "@mui/material";
 import Gass from "./Gass.jsx";
+import { useContext } from "react";
+import { DivePlanDispatchContext } from "./context.jsx";
+import { Actions } from "./reducer.jsx";
 
-export default function Strategy({
-  id,
-  strategy,
-  setOxygenLevel,
-  setHeliumLevel,
-  addGass,
-  deleteGass,
-  deleteStrategy,
-}) {
+export default function Strategy({ id, strategy, removable }) {
+  const dispatch = useContext(DivePlanDispatchContext);
+
+  const deleteStrategy = () => {
+    dispatch({ type: Actions.REMOVE_STRATEGY, strategyUuid: strategy.uuid });
+  };
+
+  const addGass = () => {
+    dispatch({ type: Actions.ADD_GASS, strategyUuid: strategy.uuid });
+  };
+
   return (
     <Box
       backgroundColor={"blue"}
@@ -24,15 +29,13 @@ export default function Strategy({
           key={i}
           id={i}
           gass={gass}
-          setOxygenLevel={setOxygenLevel}
-          setHeliumLevel={setHeliumLevel}
-          deleteGass={strategy.gasses.length > 1 ? deleteGass : null}
+          removable={strategy.gasses.length > 1}
         />
       ))}
       <Box display={"flex"} justifyContent={"space-between"}>
         <Button
           variant="outlined"
-          disabled={deleteStrategy === null}
+          disabled={!removable}
           onClick={() => deleteStrategy(strategy.uuid)}
         >
           Delete strategy
