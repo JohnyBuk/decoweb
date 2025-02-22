@@ -1,5 +1,6 @@
 services:
-  frontend:
+  frontend-dev:
+    profiles: [dev]
     build:
       context: frontend
       dockerfile: Dockerfile
@@ -10,8 +11,19 @@ services:
     depends_on:
       - backend
 
+  frontend-preview:
+    profiles: [preview]
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    command: sh -c "npm run build && npm run preview"
+    ports:
+      - 5173:5173
+    depends_on:
+      - backend
 
   backend:
+    profiles: [dev, preview]
     build:
       context: backend
       dockerfile: Dockerfile
