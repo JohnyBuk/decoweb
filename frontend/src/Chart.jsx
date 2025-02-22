@@ -3,6 +3,7 @@ import { LineChart } from "@mui/x-charts/LineChart";
 export default function DiveChart({ diveProfiles, keyToLabel }) {
   return (
     <LineChart
+      grid={{ horizontal: true }}
       xAxis={[
         {
           dataKey: "time",

@@ -1,5 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { Button, Collapse, Container, Slider, Typography } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import ScubaDivingIcon from "@mui/icons-material/ScubaDiving";
 import Grid from "@mui/material/Grid2";
 import { TransitionGroup } from "react-transition-group";
 import DiveChart from "./Chart.jsx";
@@ -57,7 +59,7 @@ export default function Decoweb() {
   };
 
   return (
-    <Container fixed>
+    <Container fixed sx={{ marginBottom: 10 }}>
       <DiveChart diveProfiles={diveProfile} keyToLabel={getKeyToLabel()} />
       <Grid container columnSpacing={5}>
         <Grid size={{ xs: 12, md: 5 }}>
@@ -82,9 +84,16 @@ export default function Decoweb() {
             }}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 2 }}>
-          <br></br>
-          <Button variant="contained" onClick={planDive}>
+        <Grid
+          size={{ xs: 12, md: 2 }}
+          sx={{ display: "flex", justifyContent: "end" }}
+        >
+          <Button
+            variant="contained"
+            startIcon={<ScubaDivingIcon />}
+            disableElevation
+            onClick={planDive}
+          >
             Plan dive
           </Button>
         </Grid>
@@ -100,7 +109,12 @@ export default function Decoweb() {
           </Collapse>
         ))}
       </TransitionGroup>
-      <Button variant="contained" onClick={addStartegy}>
+      <Button
+        variant="contained"
+        startIcon={<AddIcon />}
+        disableElevation
+        onClick={addStartegy}
+      >
         Add strategy
       </Button>
     </Container>

@@ -1,13 +1,16 @@
 import { Box, Button, Typography } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 import Gass from "./Gass.jsx";
 import { useContext } from "react";
 import { DivePlanDispatchContext } from "./context.jsx";
 import { Actions } from "./reducer.jsx";
+import { Add } from "@mui/icons-material";
 
 export default function Strategy({ id, strategy, removable }) {
   const dispatch = useContext(DivePlanDispatchContext);
 
-  const deleteStrategy = () => {
+  const removeStrategy = () => {
     dispatch({ type: Actions.REMOVE_STRATEGY, strategyUuid: strategy.uuid });
   };
 
@@ -17,13 +20,15 @@ export default function Strategy({ id, strategy, removable }) {
 
   return (
     <Box
-      backgroundColor={"blue"}
+      backgroundColor={"#1976d2"}
       borderRadius={1}
       p={1}
       marginBottom={3}
       marginTop={id === 0 ? 3 : 0}
     >
-      <Typography variant="h5">Strategy {id + 1}</Typography>
+      <Typography variant="h5" color="white" mb={1}>
+        Strategy {id + 1}
+      </Typography>
       {strategy.gasses.map((gass, i) => (
         <Gass
           key={i}
@@ -35,12 +40,27 @@ export default function Strategy({ id, strategy, removable }) {
       <Box display={"flex"} justifyContent={"space-between"}>
         <Button
           variant="outlined"
+          disableElevation
+          startIcon={<DeleteIcon />}
           disabled={!removable}
-          onClick={() => deleteStrategy(strategy.uuid)}
+          onClick={() => removeStrategy(strategy.uuid)}
+          sx={{
+            backgroundColor: removable ? "white" : "#e0e0e0",
+            color: removable ? "#1976d2" : "#a6a6a6",
+          }}
         >
-          Delete strategy
+          Remove strategy
         </Button>
-        <Button variant="outlined" onClick={() => addGass(strategy.uuid)}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          disableElevation
+          onClick={() => addGass(strategy.uuid)}
+          sx={{
+            backgroundColor: "white",
+            color: "#1976d2",
+          }}
+        >
           Add gass
         </Button>
       </Box>
