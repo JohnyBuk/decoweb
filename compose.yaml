@@ -3,7 +3,7 @@ services:
     profiles: [dev]
     build:
       context: frontend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
       - ./frontend:/app
     ports:
@@ -15,15 +15,21 @@ services:
     profiles: [preview]
     build:
       context: frontend
-      dockerfile: Dockerfile
-    command: sh -c "npm run build && npm run preview"
+      dockerfile: Dockerfile.preview
+    ports:
+      - 5173:5173
+    depends_on:
+      - backend
+
+  frontend-hub:
+    profiles: [release]
+    image: johnybuk/decoweb:latest
     ports:
       - 5173:5173
     depends_on:
       - backend
 
   backend:
-    profiles: [dev, preview]
     build:
       context: backend
       dockerfile: Dockerfile
