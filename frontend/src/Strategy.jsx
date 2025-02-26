@@ -1,11 +1,11 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Collapse, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import Gass from "./Gass.jsx";
 import { useContext } from "react";
 import { DivePlanDispatchContext } from "./context.jsx";
 import { Actions } from "./reducer.jsx";
-import { Add } from "@mui/icons-material";
+import { TransitionGroup } from "react-transition-group";
 
 export default function Strategy({ id, strategy, removable }) {
   const dispatch = useContext(DivePlanDispatchContext);
@@ -29,14 +29,18 @@ export default function Strategy({ id, strategy, removable }) {
       <Typography variant="h5" color="white" mb={1}>
         Strategy {id + 1}
       </Typography>
-      {strategy.gasses.map((gass, i) => (
-        <Gass
-          key={i}
-          id={i}
-          gass={gass}
-          removable={strategy.gasses.length > 1}
-        />
-      ))}
+      <TransitionGroup>
+        {strategy.gasses.map((gass, i) => (
+          <Collapse key={i}>
+            <Gass
+              key={i}
+              id={i}
+              gass={gass}
+              removable={strategy.gasses.length > 1}
+            />{" "}
+          </Collapse>
+        ))}
+      </TransitionGroup>
       <Box display={"flex"} justifyContent={"space-between"}>
         <Button
           variant="outlined"
