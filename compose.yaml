@@ -21,7 +21,7 @@ services:
     depends_on:
       - backend
 
-  frontend-hub:
+  frontend-release:
     profiles: [release]
     image: johnybuk/decoweb:latest
     ports:
