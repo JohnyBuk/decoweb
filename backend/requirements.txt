@@ -1,4 +1,4 @@
 decotengu==0.14.1
 Flask==3.1.0
-Flask-Cors==5.0.0
 numpy==2.0.2
+gunicorn==23.0.0

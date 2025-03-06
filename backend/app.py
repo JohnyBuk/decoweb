@@ -1,10 +1,8 @@
 import numpy as np
 import flask
 import decotengu
-from flask_cors import CORS
 
 app = flask.Flask(__name__)
-CORS(app)
 
 @app.route("/plan-dive", methods=["POST"])
 def plane_dive_endpoint():
@@ -12,7 +10,6 @@ def plane_dive_endpoint():
     print(data)
     result = plan_dive(data)
     result = flask.json.dumps(result, indent=2)
-    # print(result)
     return result
 
 
@@ -44,7 +41,6 @@ def plan_dive(data):
         for step in profile:
             time.append(round(step.time, 1))
             depth.append(round(engine._to_depth(step.abs_p)))
-            print(step)
 
         time, depth = fill_missing_values(time, depth)
         result.append({"time": time, "depth": depth, "strategy": strategy["uuid"]})

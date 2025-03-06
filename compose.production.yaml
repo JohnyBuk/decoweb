@@ -1,0 +1,45 @@
+services:
+  frontend-release:
+    profiles: [release]
+    image: johnybuk/decoweb:latest
+    ports:
+      - 80:80
+    depends_on:
+      - api
+    networks:
+      - frontend
+
+  frontend-production:
+    profiles: [production]
+    build:
+      context: frontend
+      dockerfile: Dockerfile.production
+    ports:
+      - 80:80
+    depends_on:
+      - api
+    networks:
+      - frontend
+
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile.production
+    volumes:
+      - ./backend:/app
+    networks:
+      - backend
+
+  api:
+    image: nginx:latest
+    volumes:
+      - ./backend/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
+    networks:
+      - frontend
+      - backend
+
+networks:
+  frontend:
+  backend:
