@@ -2,13 +2,19 @@ services:
   frontend-release:
     profiles: [release]
     image: johnybuk/decoweb:latest
+    restart: always
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - api
     networks:
       - frontend
-
+    volumes:
+      - ./frontend/nginx.conf.release:/etc/nginx/nginx.conf/:ro
+      - ./certbot/conf:/etc/letsencrypt/:ro
+      - ./certbot/www:/var/www/certbot/:ro
+      
   frontend-production:
     profiles: [production]
     build:
@@ -20,8 +26,23 @@ services:
       - api
     networks:
       - frontend
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/nginx.conf/:ro
+
+  certbot:
+    profiles: [release]
+    image: certbot/certbot:latest
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email jenahruby@gmail.com -d decoweb.com --agree-tos
+    depends_on:
+      - frontend-release
+    networks:
+      - frontend
+    volumes:
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+      - ./certbot/www/:/var/www/certbot/:rw
 
   backend:
+    restart: always
     build:
       context: backend
       dockerfile: Dockerfile.production
@@ -32,8 +53,9 @@ services:
 
   api:
     image: nginx:latest
+    restart: always
     volumes:
-      - ./backend/nginx.conf:/etc/nginx/nginx.conf
+      - ./backend/nginx.conf:/etc/nginx/nginx.conf/:ro
     depends_on:
       - backend
     networks:
