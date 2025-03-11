@@ -13,7 +13,7 @@ services:
     networks:
       - frontend
     volumes:
-      - ./frontend/nginx.conf.production:/etc/nginx/nginx.conf/:ro
+      - ./frontend/nginx.conf:/etc/nginx/nginx.conf/:ro
       - ./certbot/conf:/etc/nginx/ssl/:ro
       - ./certbot/www:/var/www/certbot/:ro
 
@@ -39,27 +39,6 @@ services:
     networks:
       - frontend
       - backend
-
-  initial-challenge:
-    image: nginx:latest
-    profiles: [challenge]
-    volumes:
-      - ./frontend/nginx.conf.challenge:/etc/nginx/nginx.conf/:ro
-      - ./certbot/www/:/var/www/html/:ro
-    ports:
-      - 80:80
-    networks:
-      - frontend
-
-  certbot:
-    profiles: [challenge]
-    image: certbot/certbot:latest
-    command: certonly --webroot --webroot-path /var/www/html --force-renewal --email jenahruby@gmail.com -d decoweb.online --agree-tos
-    networks:
-      - frontend
-    volumes:
-      - ./certbot/www/:/var/www/html/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
 
 networks:
   frontend:
