@@ -1,0 +1,29 @@
+services:
+  frontend-dev:
+    profiles: [dev]
+    build:
+      context: frontend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./frontend:/app
+    ports:
+      - 5173:5173
+    depends_on:
+      - backend
+
+  frontend-preview:
+    profiles: [preview]
+    build:
+      context: frontend
+      dockerfile: Dockerfile.preview
+    ports:
+      - 5173:5173
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/app
