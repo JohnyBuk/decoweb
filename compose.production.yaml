@@ -1,27 +1,25 @@
 services:
-  frontend-release:
-    profiles: [release]
-    image: johnybuk/decoweb:latest
-    ports:
-      - 80:80
-    depends_on:
-      - api
-    networks:
-      - frontend
-
-  frontend-production:
+  frontend:
+    restart: always
     profiles: [production]
     build:
       context: frontend
       dockerfile: Dockerfile.production
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - api
     networks:
       - frontend
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/nginx.conf/:ro
+      - ./certbot/conf:/etc/nginx/ssl/:ro
+      - ./certbot/www:/var/www/certbot/:ro
 
   backend:
+    restart: always
+    profiles: [production]
     build:
       context: backend
       dockerfile: Dockerfile.production
@@ -32,8 +30,10 @@ services:
 
   api:
     image: nginx:latest
+    restart: always
+    profiles: [production]
     volumes:
-      - ./backend/nginx.conf:/etc/nginx/nginx.conf
+      - ./backend/nginx.conf:/etc/nginx/nginx.conf/:ro
     depends_on:
       - backend
     networks:
