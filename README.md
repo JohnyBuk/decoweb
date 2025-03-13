@@ -9,7 +9,7 @@ This application is not a substitute for proper training in deep diving. Using t
  
 ## Local build
 
-Simply run `docker compose up` and visit http://localhost:5173/
+Install Docker, simply run `sh run.dev.sh` and visit http://localhost:5173/
 
 ## Features
 
