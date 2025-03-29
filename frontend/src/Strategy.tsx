@@ -1,30 +1,45 @@
 import { Box, Button, Collapse, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import Gass from "./Gass.jsx";
+import Gass from "./Gass.js";
 import { useContext } from "react";
-import { DivePlanDispatchContext } from "./context.jsx";
-import { Actions } from "./reducer.jsx";
+import { DivePlanContext } from "./context";
+import { DivePlanActionType } from "./reducer";
 import { TransitionGroup } from "react-transition-group";
+import { StrategyType } from "./types.js";
 
-export default function Strategy({ id, strategy, removable }) {
-  const dispatch = useContext(DivePlanDispatchContext);
+type StrategyProps = {
+  id: number;
+  strategy: StrategyType;
+  removable: boolean;
+};
+
+export default function Strategy({ id, strategy, removable }: StrategyProps) {
+  const { dispatch } = useContext(DivePlanContext);
 
   const removeStrategy = () => {
-    dispatch({ type: Actions.REMOVE_STRATEGY, strategyUuid: strategy.uuid });
+    dispatch({
+      type: DivePlanActionType.REMOVE_STRATEGY,
+      strategyUuid: strategy.uuid,
+    });
   };
 
   const addGass = () => {
-    dispatch({ type: Actions.ADD_GASS, strategyUuid: strategy.uuid });
+    dispatch({
+      type: DivePlanActionType.ADD_GASS,
+      strategyUuid: strategy.uuid,
+    });
   };
 
   return (
     <Box
-      backgroundColor={"#1976d2"}
-      borderRadius={1}
-      p={1}
-      marginBottom={3}
-      marginTop={id === 0 ? 3 : 0}
+      sx={{
+        backgroundColor: "#1976d2",
+        borderRadius: 1,
+        p: 1,
+        marginBottom: 3,
+        marginTop: id === 0 ? 3 : 0,
+      }}
     >
       <Typography variant="h5" color="white" mb={1}>
         Strategy {id + 1}
@@ -47,7 +62,7 @@ export default function Strategy({ id, strategy, removable }) {
           disableElevation
           startIcon={<DeleteIcon />}
           disabled={!removable}
-          onClick={() => removeStrategy(strategy.uuid)}
+          onClick={removeStrategy}
           sx={{
             backgroundColor: removable ? "white" : "#e0e0e0",
             color: removable ? "#1976d2" : "#a6a6a6",
@@ -59,7 +74,7 @@ export default function Strategy({ id, strategy, removable }) {
           variant="contained"
           startIcon={<AddIcon />}
           disableElevation
-          onClick={() => addGass(strategy.uuid)}
+          onClick={addGass}
           sx={{
             backgroundColor: "white",
             color: "#1976d2",

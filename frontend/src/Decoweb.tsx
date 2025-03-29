@@ -4,63 +4,52 @@ import AddIcon from "@mui/icons-material/Add";
 import ScubaDivingIcon from "@mui/icons-material/ScubaDiving";
 import Grid from "@mui/material/Grid2";
 import { TransitionGroup } from "react-transition-group";
-import DiveChart from "./Chart.jsx";
-import Strategy from "./Strategy.jsx";
-import { Actions, separateStrategies } from "./reducer.jsx";
-import { DivePlanContext, DivePlanDispatchContext } from "./context.jsx";
+import DiveChart from "./DiveChart";
+import Strategy from "./Strategy";
+import { DivePlanActionType } from "./reducer";
+import { getKeyToLabel, separateStrategies } from "./utils";
+import { DivePlanContext } from "./context";
 
 export default function Decoweb() {
-  const divePlan = useContext(DivePlanContext);
-  const dispatch = useContext(DivePlanDispatchContext);
+  const { divePlan, dispatch } = useContext(DivePlanContext);
   const strategies = separateStrategies(divePlan);
   const [diveProfile, setDiveProfile] = useState([]);
 
-  const addStartegy = () => dispatch({ type: Actions.ADD_STRATEGY });
+  const addStartegy = () => dispatch({ type: DivePlanActionType.ADD_STRATEGY });
 
-  const setTargetDepth = (depth) =>
-    dispatch({ type: Actions.SET_TAREGT_DEPTH, targetDepth: depth });
+  const setTargetDepth = (depth: number) =>
+    dispatch({ type: DivePlanActionType.SET_TAREGT_DEPTH, targetDepth: depth });
 
-  const setBottomTime = (time) =>
-    dispatch({ type: Actions.SET_BOTTOM_TIME, bottomTime: time });
+  const setBottomTime = (time: number) =>
+    dispatch({ type: DivePlanActionType.SET_BOTTOM_TIME, bottomTime: time });
 
-  const planDive = () => {
-    const newDivePlan = {
-      "target-depth": divePlan.targetDepth,
-      "bottom-time": divePlan.bottomTime,
-      strategies: strategies,
-    };
-    fetchDiveProfiles(newDivePlan);
-  };
-
-  const fetchDiveProfiles = (dict) => {
+  const fetchDiveProfiles = () => {
     fetch("/plan-dive", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(dict),
+      body: JSON.stringify({
+        "target-depth": divePlan.targetDepth,
+        "bottom-time": divePlan.bottomTime,
+        strategies: strategies,
+      }),
     })
       .then((response) => response.json())
-      .then((data) => {
-        setDiveProfile(data);
+      .then((diveProfiles) => {
+        setDiveProfile(diveProfiles);
       });
   };
 
   // show default dive profile graph
-  useEffect(() => planDive(), []);
-
-  const getKeyToLabel = () => {
-    let keyToLabel = {};
-    strategies.forEach((strategy, i) => {
-      keyToLabel[strategy.uuid] =
-        "Strategy " + (i + 1).toString() + " depth (m)";
-    });
-    return keyToLabel;
-  };
+  useEffect(() => fetchDiveProfiles(), []);
 
   return (
     <Container fixed sx={{ marginBottom: 10 }}>
-      <DiveChart diveProfiles={diveProfile} keyToLabel={getKeyToLabel()} />
+      <DiveChart
+        diveProfiles={diveProfile}
+        keyToLabel={getKeyToLabel(strategies)}
+      />
       <Grid container columnSpacing={5}>
         <Grid size={{ xs: 12, md: 5 }}>
           <Typography>Target depth {divePlan.targetDepth} meters</Typography>
@@ -68,8 +57,8 @@ export default function Decoweb() {
             value={divePlan.targetDepth}
             aria-label="Default"
             valueLabelDisplay="auto"
-            onChange={(event, newValue) => {
-              setTargetDepth(newValue);
+            onChange={(_event, newValue, _activeThumb) => {
+              setTargetDepth(Array.isArray(newValue) ? newValue[0] : newValue);
             }}
           />
         </Grid>
@@ -79,8 +68,8 @@ export default function Decoweb() {
             value={divePlan.bottomTime}
             aria-label="Default"
             valueLabelDisplay="auto"
-            onChange={(event, newValue) => {
-              setBottomTime(newValue);
+            onChange={(_event, newValue, _activeThumb) => {
+              setBottomTime(Array.isArray(newValue) ? newValue[0] : newValue);
             }}
           />
         </Grid>
@@ -92,7 +81,7 @@ export default function Decoweb() {
             variant="contained"
             startIcon={<ScubaDivingIcon />}
             disableElevation
-            onClick={planDive}
+            onClick={fetchDiveProfiles}
           >
             Plan dive
           </Button>
