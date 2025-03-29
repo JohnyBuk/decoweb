@@ -2,31 +2,40 @@ import { Box, Button, Slider, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Grid from "@mui/material/Grid2";
 import { useContext } from "react";
-import { DivePlanDispatchContext } from "./context";
-import { Actions } from "./reducer";
+import { DivePlanContext } from "./context";
+import { DivePlanActionType } from "./reducer";
+import { GassType } from "./types";
 
-export default function Gass({ id, gass, removable }) {
-  const dispatch = useContext(DivePlanDispatchContext);
+type GassProps = {
+  id: number;
+  gass: GassType;
+  removable: boolean;
+};
+
+export default function Gass({ id, gass, removable }: GassProps) {
+  const { dispatch } = useContext(DivePlanContext);
 
   const removeGass = () =>
-    dispatch({ type: Actions.REMOVE_GASS, gassUuid: gass.uuid });
+    dispatch({ type: DivePlanActionType.REMOVE_GASS, gassUuid: gass.gassUuid });
 
-  const setOxygenLevel = (value) =>
+  const setOxygenLevel = (value: number) =>
     dispatch({
-      type: Actions.SET_OXYGEN_LEVEL,
-      gassUuid: gass.uuid,
+      type: DivePlanActionType.SET_OXYGEN_LEVEL,
+      gassUuid: gass.gassUuid,
       oxygen: value,
     });
 
-  const setHeliumLevel = (value) =>
+  const setHeliumLevel = (value: number) =>
     dispatch({
-      type: Actions.SET_HELIUM_LEVEL,
-      gassUuid: gass.uuid,
+      type: DivePlanActionType.SET_HELIUM_LEVEL,
+      gassUuid: gass.gassUuid,
       helium: value,
     });
 
   return (
-    <Box backgroundColor={"white"} p={2} marginBottom={2} borderRadius={1}>
+    <Box
+      sx={{ backgroundColor: "white", p: 2, marginBottom: 2, borderRadius: 2 }}
+    >
       <Grid container columnSpacing={5}>
         <Grid
           size={{ xs: 12 }}
@@ -40,7 +49,7 @@ export default function Gass({ id, gass, removable }) {
             startIcon={<DeleteIcon />}
             disableElevation
             disabled={!removable}
-            onClick={() => removeGass(gass.uuid)}
+            onClick={removeGass}
           >
             Remove gass
           </Button>
@@ -51,8 +60,8 @@ export default function Gass({ id, gass, removable }) {
             value={gass.oxygen}
             aria-label="Default"
             valueLabelDisplay="auto"
-            onChange={(event, newValue) => {
-              setOxygenLevel(newValue);
+            onChange={(_event, newValue, _activeThumb) => {
+              setOxygenLevel(Array.isArray(newValue) ? newValue[0] : newValue);
             }}
           />
         </Grid>
@@ -62,8 +71,8 @@ export default function Gass({ id, gass, removable }) {
             value={gass.helium}
             aria-label="Default"
             valueLabelDisplay="auto"
-            onChange={(event, newValue) => {
-              setHeliumLevel(newValue);
+            onChange={(_event, newValue, _activeThumb) => {
+              setHeliumLevel(Array.isArray(newValue) ? newValue[0] : newValue);
             }}
           />
         </Grid>
