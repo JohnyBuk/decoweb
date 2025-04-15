@@ -1,1 +1,1 @@
-docker compose -f compose.production.yaml --profile production up $1
+docker compose -f compose.production.yaml up $1

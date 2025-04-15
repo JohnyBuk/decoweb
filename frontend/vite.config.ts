@@ -6,16 +6,20 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 5173,
-    allowedHosts: ["www.decoweb.online", "decoweb.online"],
     proxy: {
-      "/plan-dive": "http://backend:5000",
+      "/plan-dive/": {
+        target: "http://backend:5000",
+        changeOrigin: true,
+      },
     },
   },
   preview: {
     port: 5173,
-    allowedHosts: ["www.decoweb.online", "decoweb.online"],
     proxy: {
-      "/plan-dive": "http://backend:5000",
+      "/plan-dive/": {
+        target: "http://backend:5000",
+        changeOrigin: true,
+      },
     },
   },
 });

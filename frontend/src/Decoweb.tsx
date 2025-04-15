@@ -24,21 +24,22 @@ export default function Decoweb() {
     dispatch({ type: DivePlanActionType.SET_BOTTOM_TIME, bottomTime: time });
 
   const fetchDiveProfiles = () => {
-    fetch("/plan-dive", {
+    fetch("plan-dive/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "target-depth": divePlan.targetDepth,
-        "bottom-time": divePlan.bottomTime,
+        targetDepth: divePlan.targetDepth,
+        bottomTime: divePlan.bottomTime,
         strategies: strategies,
       }),
     })
       .then((response) => response.json())
-      .then((diveProfiles) => {
-        setDiveProfile(diveProfiles);
-      });
+      .then((response) => {
+        setDiveProfile(response["profiles"]);
+      })
+      .catch((error) => console.error("Error:", error));
   };
 
   // show default dive profile graph
