@@ -1,1 +1,0 @@
-docker compose -f compose.production.yaml up $1

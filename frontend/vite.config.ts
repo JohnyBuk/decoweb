@@ -8,7 +8,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/plan-dive/": {
-        target: "http://backend:5000",
+        target: "http://backend:8000",
         changeOrigin: true,
       },
     },
@@ -17,7 +17,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/plan-dive/": {
-        target: "http://backend:5000",
+        target: "http://backend:8000",
         changeOrigin: true,
       },
     },

@@ -1,1 +1,0 @@
-docker compose -f compose.dev.yaml --profile preview up $1
