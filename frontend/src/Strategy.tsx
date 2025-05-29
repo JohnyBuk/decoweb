@@ -12,12 +12,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 type StrategyProps = {
-  id: number;
+  index: number;
   strategy: StrategyType;
   removable: boolean;
 };
 
-export default function Strategy({ id, strategy, removable }: StrategyProps) {
+export default function Strategy({ index, strategy, removable }: StrategyProps) {
   const [targetDepth, setTargetDepth] = useState(strategy.target_depth);
   const [bottomTime, setBottomTime] = useState(strategy.bottom_time);
   const queryClient = useQueryClient();
@@ -132,11 +132,11 @@ export default function Strategy({ id, strategy, removable }: StrategyProps) {
         borderRadius: 1,
         p: 1,
         marginBottom: 3,
-        marginTop: id === 0 ? 3 : 0,
+        marginTop: index === 0 ? 3 : 0,
       }}
     >
       <Typography variant="h5" color="white" mb={1}>
-        Strategy {id + 1}
+        Strategy {index + 1}
       </Typography>
 
       <Grid container columnSpacing={5}>
@@ -179,7 +179,7 @@ export default function Strategy({ id, strategy, removable }: StrategyProps) {
             <Collapse key={i}>
               <Gas
                 key={i}
-                id={i}
+                index={i}
                 gas={gas}
                 strategy={strategy}
                 removable={gasses.data.length > 1}

@@ -61,7 +61,7 @@ class DivePlanner:
         for t in longest_tive["time"]:
             datapoint = {"time": t}
             for s in all_strategies:
-                datapoint[s] = None
+                datapoint[s] = 0
             dataset.append(datapoint)
 
         for dive in dives:

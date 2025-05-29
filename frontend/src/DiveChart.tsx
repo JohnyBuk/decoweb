@@ -2,15 +2,24 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-type DivePointType = {
-  [key: string]: string;
-};
-
 type DiveChartProps = {
   keyToLabel: Map<string, string>;
 };
 
-export default function DiveChart({ keyToLabel }: DiveChartProps) {
+function getKeyToLabel(strategies: StrategyType[]): Map<string, string> {
+  let keyToLabel = new Map<string, string>();
+  strategies.data.forEach((strategy, i) => {
+    keyToLabel.set(
+      strategy.id,
+      "Strategy " + (i + 1).toString() + " depth (m):"
+    );
+  });
+  return keyToLabel;
+}
+
+export default function DiveChart({ strategies }: DiveChartProps) {
+  const keyToLabel = getKeyToLabel(strategies);
+
   const diveProfiles = useQuery({
     queryKey: ["profiles"],
     queryFn: async () => {

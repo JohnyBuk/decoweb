@@ -9,12 +9,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 type GasProps = {
-  id: number;
+  index: number;
   gas: GasType;
   removable: boolean;
 };
 
-export default function Gas({ id, gas, strategy, removable }: GasProps) {
+export default function Gas({ index, gas, strategy, removable }: GasProps) {
   const [oxygen, setOxygenLevel] = useState(gas.oxygen);
   const [helium, setHeliumLevel] = useState(gas.helium);
   const queryClient = useQueryClient();
@@ -84,7 +84,7 @@ export default function Gas({ id, gas, strategy, removable }: GasProps) {
           sx={{ display: "flex", justifyContent: "space-between" }}
         >
           <Typography variant="h6" color="#1976d2">
-            Gas {id + 1}
+            Gas {index + 1}
           </Typography>
           <Button
             variant="contained"

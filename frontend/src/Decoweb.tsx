@@ -72,13 +72,13 @@ export default function Decoweb() {
 
   return (
     <Container fixed sx={{ marginBottom: 10 }}>
-      {<DiveChart keyToLabel={getKeyToLabel(strategies)} />}
+      {<DiveChart strategies={strategies} />}
       <TransitionGroup>
         {strategies.data.map((strategy, i) => (
           <Collapse key={i}>
             <Strategy
               key={i}
-              id={i}
+              index={i}
               strategy={strategy}
               removable={strategies.data.length > 1}
             />
