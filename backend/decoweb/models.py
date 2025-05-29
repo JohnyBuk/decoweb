@@ -10,7 +10,7 @@ class Strategy(models.Model):
 
 class Gass(models.Model):
     strategy = models.ForeignKey(Strategy, on_delete=models.CASCADE)
-    oxygen = models.IntegerField()
+    oxygen = models.IntegerField(default=21)
     helium = models.IntegerField(default=0)
     
     def __str__(self):

@@ -18,6 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('', include('decoweb.urls')),
+    path('decoweb/', include('decoweb.urls')),
     path('admin/', admin.site.urls),
 ]
