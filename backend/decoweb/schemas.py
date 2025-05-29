@@ -1,14 +1,14 @@
 from ninja import Schema, ModelSchema
-from .models import Strategy, Gass
+from .models import Strategy, Gas
 
 
-class GassSchemaOut(ModelSchema):
+class GasSchemaOut(ModelSchema):
     class Meta:
-        model = Gass
+        model = Gas
         fields = ["id", "strategy", "oxygen", "helium"]
 
 
-class GassSchemaIn(Schema):
+class GasSchemaIn(Schema):
     strategy: int
     oxygen: int = 21
     helium: int = 0

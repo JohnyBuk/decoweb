@@ -1,4 +1,4 @@
-export type GassType = {
+export type GasType = {
   strategyUuid: string;
   gassUuid: string;
   oxygen: number;
@@ -7,11 +7,11 @@ export type GassType = {
 
 export type StrategyType = {
   uuid: string;
-  gasses: GassType[];
+  gasses: GasType[];
 };
 
 export type DivePlanType = {
   targetDepth: number;
   bottomTime: number;
-  gasses: GassType[];
+  gasses: GasType[];
 };

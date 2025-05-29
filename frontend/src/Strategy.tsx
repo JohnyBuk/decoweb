@@ -2,12 +2,12 @@ import { Box, Button, Collapse, Slider, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import Grid from "@mui/material/Grid2";
-import Gass from "./Gass.js";
+import Gas from "./Gas.js";
 import { useContext, useState } from "react";
 import { DivePlanContext } from "./context.js";
 import { DivePlanActionType } from "./reducer.js";
 import { TransitionGroup } from "react-transition-group";
-import { GassType, StrategyType } from "./types.js";
+import { GasType, StrategyType } from "./types.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -76,7 +76,7 @@ export default function Strategy({ id, strategy, removable }: StrategyProps) {
     },
   });
 
-  const addGassMutation = useMutation({
+  const addGasMutation = useMutation({
     mutationFn: () => {
       return axios.post(`decoweb/api/gasses`, {
         strategy: strategy.id,
@@ -91,14 +91,10 @@ export default function Strategy({ id, strategy, removable }: StrategyProps) {
       }),
   });
 
-  // if (gasses.isLoading) return null;
-
   if (gasses.isError) {
     console.log("Error: ", gasses.error);
     return null;
   }
-
-  // if (gasses.data.length === 0) return null;
 
   return (
     <Box
@@ -150,12 +146,12 @@ export default function Strategy({ id, strategy, removable }: StrategyProps) {
       </Grid>
       {gasses.isLoading ? null : (
         <TransitionGroup>
-          {gasses.data.map((gass, i) => (
+          {gasses.data.map((gas, i) => (
             <Collapse key={i}>
-              <Gass
+              <Gas
                 key={i}
                 id={i}
-                gass={gass}
+                gas={gas}
                 removable={gasses.data.length > 1}
               />
             </Collapse>
@@ -180,13 +176,13 @@ export default function Strategy({ id, strategy, removable }: StrategyProps) {
           variant="contained"
           startIcon={<AddIcon />}
           disableElevation
-          onClick={() => addGassMutation.mutate()}
+          onClick={() => addGasMutation.mutate()}
           sx={{
             backgroundColor: "white",
             color: "#1976d2",
           }}
         >
-          Add gass
+          Add gas
         </Button>
       </Box>
     </Box>

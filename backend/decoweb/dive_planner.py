@@ -1,6 +1,6 @@
 import numpy as np
 import decotengu
-from .models import Strategy, Gass
+from .models import Strategy, Gas
 
 
 class DivePlanner:
@@ -10,16 +10,16 @@ class DivePlanner:
 
     def plan_strategy(self, strategy: Strategy):
         engine = decotengu.create()
-        for gass in strategy.gass_set.all():
-            oxygen = int(gass.oxygen)
-            helium = int(gass.helium)
+        for gas in strategy.gas_set.all():
+            oxygen = int(gas.oxygen)
+            helium = int(gas.helium)
             if not engine._gas_list:  # no gas in engine
                 engine.add_gas(0, oxygen, helium)
             else:
                 preasure = 1.6 / (oxygen / 100.0)
                 switch_depth = (engine._to_depth(preasure) // 3) * 3
                 if strategy.target_depth > switch_depth:
-                    # TODO select travel gass
+                    # TODO select travel gas
                     engine.add_gas(switch_depth, oxygen, helium)
 
         profile = engine.calculate(strategy.target_depth, strategy.bottom_time)

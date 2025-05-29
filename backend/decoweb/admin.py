@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 
-from .models import Strategy, Gass
+from .models import Strategy, Gas
 
 admin.site.register(Strategy)
-admin.site.register(Gass)
+admin.site.register(Gas)

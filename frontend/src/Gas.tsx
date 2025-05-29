@@ -4,25 +4,25 @@ import Grid from "@mui/material/Grid2";
 import { useContext, useState } from "react";
 import { DivePlanContext } from "./context";
 import { DivePlanActionType } from "./reducer";
-import { GassType } from "./types";
+import { GasType } from "./types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-type GassProps = {
+type GasProps = {
   id: number;
-  gass: GassType;
+  gas: GasType;
   removable: boolean;
 };
 
-export default function Gass({ id, gass, removable }: GassProps) {
-  const [oxygen, setOxygenLevel] = useState(gass.oxygen);
-  const [helium, setHeliumLevel] = useState(gass.helium);
+export default function Gas({ id, gas, removable }: GasProps) {
+  const [oxygen, setOxygenLevel] = useState(gas.oxygen);
+  const [helium, setHeliumLevel] = useState(gas.helium);
   const queryClient = useQueryClient();
 
-  const updateGassMutation = useMutation({
+  const updateGasMutation = useMutation({
     mutationFn: () => {
-      return axios.put(`decoweb/api/gasses/${gass.id}`, {
-        strategy: gass.strategy,
+      return axios.put(`decoweb/api/gasses/${gas.id}`, {
+        strategy: gas.strategy,
         oxygen: oxygen,
         helium: helium,
       });
@@ -32,9 +32,9 @@ export default function Gass({ id, gass, removable }: GassProps) {
     },
   });
 
-  const removeGassMutation = useMutation({
+  const removeGasMutation = useMutation({
     mutationFn: () => {
-      return axios.delete(`decoweb/api/gasses/${gass.id}`);
+      return axios.delete(`decoweb/api/gasses/${gas.id}`);
     },
     onSuccess: (data) => queryClient.invalidateQueries(["strategies"]),
   });
@@ -49,16 +49,16 @@ export default function Gass({ id, gass, removable }: GassProps) {
           sx={{ display: "flex", justifyContent: "space-between" }}
         >
           <Typography variant="h6" color="#1976d2">
-            Gass {id + 1}
+            Gas {id + 1}
           </Typography>
           <Button
             variant="contained"
             startIcon={<DeleteIcon />}
             disableElevation
             disabled={!removable}
-            onClick={() => removeGassMutation.mutate()}
+            onClick={() => removeGasMutation.mutate()}
           >
-            Remove gass
+            Remove gas
           </Button>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
@@ -71,7 +71,7 @@ export default function Gass({ id, gass, removable }: GassProps) {
               setOxygenLevel(value as number);
             }}
             onChangeCommitted={(_event, _) => {
-              updateGassMutation.mutate();
+              updateGasMutation.mutate();
             }}
           />
         </Grid>
@@ -85,7 +85,7 @@ export default function Gass({ id, gass, removable }: GassProps) {
               setHeliumLevel(value as number);
             }}
             onChangeCommitted={(_event, _) => {
-              updateGassMutation.mutate();
+              updateGasMutation.mutate();
             }}
           />
         </Grid>

@@ -3,8 +3,8 @@ from ninja.errors import HttpError
 from django.shortcuts import get_object_or_404
 
 from .dive_planner import DivePlanner
-from .models import Strategy, Gass
-from .schemas import GassSchemaOut, GassSchemaIn, StrategySchemaOut, SrategySchemaIn
+from .models import Strategy, Gas
+from .schemas import GasSchemaOut, GasSchemaIn, StrategySchemaOut, SrategySchemaIn
 
 
 api = NinjaAPI(title="Decoweb API")
@@ -16,8 +16,8 @@ def plan_dive(request):
     Plan dive strategies
     """
     try:
-        strategies = Strategy.objects.filter(gass__isnull=False).distinct()
-        dive_profiles =  DivePlanner().plan_dive(strategies)
+        strategies = Strategy.objects.filter(gas__isnull=False).distinct()
+        dive_profiles = DivePlanner().plan_dive(strategies)
         return dive_profiles
     except Exception as e:
         raise HttpError(500, f"Error: {e}")
@@ -30,7 +30,7 @@ def get_strategies(request, keep_empty=False):
     """
     if keep_empty:
         return Strategy.objects.all()
-    return Strategy.objects.filter(gass__isnull=False).distinct()
+    return Strategy.objects.filter(gas__isnull=False).distinct()
 
 
 @api.get("/strategies/{id}", response=StrategySchemaOut)
@@ -49,7 +49,7 @@ def create_strategy(request, payload: SrategySchemaIn, empty: bool = True):
     strategy = Strategy.objects.create(**payload.dict())
     if not empty:
         # create default gas mixture (air)
-        strategy.gass_set.create(strategy=strategy)
+        strategy.gas_set.create(strategy=strategy)
     return strategy
 
 
@@ -75,59 +75,59 @@ def update_strategy(request, id: int, payload: SrategySchemaIn):
     return strategy
 
 
-@api.get("/strategies/{id}/gasses/", response=list[GassSchemaOut])
+@api.get("/strategies/{id}/gasses/", response=list[GasSchemaOut])
 def get_strategy_gasses(request, id: int):
     """
     Get all gasses for strategy
     """
     strategy = get_object_or_404(Strategy, id=id)
-    return strategy.gass_set.all()
+    return strategy.gas_set.all()
 
 
-@api.get("/gasses", response=list[GassSchemaOut])
+@api.get("/gasses", response=list[GasSchemaOut])
 def get_gasses(request):
     """
     Get all gasses
     """
-    return Gass.objects.all()
+    return Gas.objects.all()
 
 
-@api.get("/gasses/{id}", response=GassSchemaOut)
-def get_gass(request, id: int):
+@api.get("/gasses/{id}", response=GasSchemaOut)
+def get_gas(request, id: int):
     """
-    Get gass
+    Get gas
     """
-    return get_object_or_404(Gass, id=id)
+    return get_object_or_404(Gas, id=id)
 
 
-@api.post("/gasses", response=GassSchemaOut)
-def create_gass(request, payload: GassSchemaIn):
+@api.post("/gasses", response=GasSchemaOut)
+def create_gas(request, payload: GasSchemaIn):
     """
-    Create new gass
+    Create new gas
     """
     strategy = get_object_or_404(Strategy, id=payload.strategy)
-    return Gass.objects.create(
+    return Gas.objects.create(
         strategy=strategy, oxygen=payload.oxygen, helium=payload.helium
     )
 
 
-@api.delete("/gasses/{id}", response=GassSchemaOut)
-def delete_gass(request, id: int):
+@api.delete("/gasses/{id}", response=GasSchemaOut)
+def delete_gas(request, id: int):
     """
-    Delete gass
+    Delete gas
     """
-    gass = get_object_or_404(Gass, id=id)
-    gass.delete()
-    return gass
+    gas = get_object_or_404(Gas, id=id)
+    gas.delete()
+    return gas
 
 
-@api.put("/gasses/{id}", response=GassSchemaOut)
-def update_gass(request, id: int, payload: GassSchemaIn):
+@api.put("/gasses/{id}", response=GasSchemaOut)
+def update_gas(request, id: int, payload: GasSchemaIn):
     """
-    Update gass
+    Update gas
     """
-    gass = get_object_or_404(Gass, id=id)
-    gass.oxygen = payload.oxygen
-    gass.helium = payload.helium
-    gass.save()
-    return gass
+    gas = get_object_or_404(Gas, id=id)
+    gas.oxygen = payload.oxygen
+    gas.helium = payload.helium
+    gas.save()
+    return gas
