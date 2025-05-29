@@ -43,7 +43,13 @@ export default function Strategy({ id, strategy, removable }: StrategyProps) {
       });
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["strategies"]);
+      queryClient.invalidateQueries({
+        queryKey: ["strategies", strategy.id],
+        exact: true,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["profiles"],
+      });
     },
   });
 
@@ -70,25 +76,48 @@ export default function Strategy({ id, strategy, removable }: StrategyProps) {
     onError: (err, newStrategy, context) => {
       queryClient.setQueryData(["strategies"], context.prevStrategies);
     },
-    // Always refetch after error or success:
     onSettled: () => {
+      // Always refetch after error or success
       queryClient.invalidateQueries({ queryKey: ["strategies"] });
     },
   });
 
   const addGasMutation = useMutation({
-    mutationFn: () => {
-      return axios.post(`decoweb/api/gasses`, {
-        strategy: strategy.id,
-        oxygen: 21,
-        helium: 0,
-      });
+    mutationFn: (newGass) => {
+      return axios.post(`decoweb/api/gasses`, newGass);
     },
-    onSuccess: (data) =>
+    onMutate: async (newGass) => {
+      // Cancel any outgoing refetches for that `queryKey`
+      await queryClient.cancelQueries({
+        queryKey: ["strategies", strategy.id],
+        exact: true,
+      });
+
+      // Snapshot the previous value
+      const prevData = queryClient.getQueryData(["strategies", strategy.id]);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(["strategies", strategy.id], (previous) => [
+        ...previous,
+        newGass,
+      ]);
+
+      // Return a context with the previous and new data
+      return prevData;
+    },
+    onError: (err, newGasses, context) => {
+      queryClient.setQueryData(["strategies", strategy.id], context.prevData);
+    },
+    onSettled: (data) => {
+      // Always refetch after error or success
       queryClient.invalidateQueries({
         queryKey: ["strategies", strategy.id],
         exact: true,
-      }),
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["profiles"],
+      });
+    },
   });
 
   if (gasses.isError) {
@@ -152,6 +181,7 @@ export default function Strategy({ id, strategy, removable }: StrategyProps) {
                 key={i}
                 id={i}
                 gas={gas}
+                strategy={strategy}
                 removable={gasses.data.length > 1}
               />
             </Collapse>
@@ -176,7 +206,13 @@ export default function Strategy({ id, strategy, removable }: StrategyProps) {
           variant="contained"
           startIcon={<AddIcon />}
           disableElevation
-          onClick={() => addGasMutation.mutate()}
+          onClick={() =>
+            addGasMutation.mutate({
+              strategy: strategy.id,
+              oxygen: 21,
+              helium: 0,
+            })
+          }
           sx={{
             backgroundColor: "white",
             color: "#1976d2",

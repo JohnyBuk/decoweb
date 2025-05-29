@@ -14,7 +14,7 @@ type GasProps = {
   removable: boolean;
 };
 
-export default function Gas({ id, gas, removable }: GasProps) {
+export default function Gas({ id, gas, strategy, removable }: GasProps) {
   const [oxygen, setOxygenLevel] = useState(gas.oxygen);
   const [helium, setHeliumLevel] = useState(gas.helium);
   const queryClient = useQueryClient();
@@ -28,7 +28,13 @@ export default function Gas({ id, gas, removable }: GasProps) {
       });
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["strategies"]);
+      queryClient.invalidateQueries({
+        queryKey: ["strategies", strategy.id],
+        exact: true,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["profiles"],
+      });
     },
   });
 
@@ -36,7 +42,36 @@ export default function Gas({ id, gas, removable }: GasProps) {
     mutationFn: () => {
       return axios.delete(`decoweb/api/gasses/${gas.id}`);
     },
-    onSuccess: (data) => queryClient.invalidateQueries(["strategies"]),
+    onMutate: async () => {
+      // Cancel any outgoing refetches for that `queryKey`
+      await queryClient.cancelQueries({
+        queryKey: ["strategies", strategy.id],
+        exact: true,
+      });
+
+      // Snapshot the previous value
+      const prevGasses = queryClient.getQueryData(["strategies", strategy.id]);
+      const newGasses = prevGasses.filter((prevGas) => gas.id != prevGas.id);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(["strategies", strategy.id], newGasses);
+
+      // Return a context with the previous and new data
+      return prevGasses;
+    },
+    onError: (err, newGasses, context) => {
+      queryClient.setQueryData(["strategies", strategy.id], context.prevGasses);
+    },
+    onSettled: () => {
+      // Always refetch after error or success
+      queryClient.invalidateQueries({
+        queryKey: ["strategies", strategy.id],
+        exact: true,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["profiles"],
+      });
+    },
   });
 
   return (

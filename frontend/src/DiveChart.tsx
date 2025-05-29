@@ -12,7 +12,7 @@ type DiveChartProps = {
 
 export default function DiveChart({ keyToLabel }: DiveChartProps) {
   const diveProfiles = useQuery({
-    queryKey: ["strategies", "diveProfiles"],
+    queryKey: ["profiles"],
     queryFn: async () => {
       const response = await axios.get("decoweb/api/plan-dive");
       return response.data;

@@ -57,9 +57,9 @@ export default function Decoweb() {
     onError: (err, newStrategy, context) => {
       queryClient.setQueryData(["strategies"], context.prevData);
     },
-    // Always refetch after error or success:
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["strategies"] });
+      // Always refetch after error or success
+      queryClient.invalidateQueries(["strategies"]);
     },
   });
 
@@ -69,8 +69,6 @@ export default function Decoweb() {
     console.log("Error: ", strategies.error);
     return null;
   }
-
-  console.log(strategies.data);
 
   return (
     <Container fixed sx={{ marginBottom: 10 }}>
