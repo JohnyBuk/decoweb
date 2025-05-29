@@ -1,10 +1,12 @@
 import { Box, Button, Slider, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Grid from "@mui/material/Grid2";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { DivePlanContext } from "./context";
 import { DivePlanActionType } from "./reducer";
 import { GassType } from "./types";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 type GassProps = {
   id: number;
@@ -13,24 +15,29 @@ type GassProps = {
 };
 
 export default function Gass({ id, gass, removable }: GassProps) {
-  const { dispatch } = useContext(DivePlanContext);
+  const [oxygen, setOxygenLevel] = useState(gass.oxygen);
+  const [helium, setHeliumLevel] = useState(gass.helium);
+  const queryClient = useQueryClient();
 
-  const removeGass = () =>
-    dispatch({ type: DivePlanActionType.REMOVE_GASS, gassUuid: gass.gassUuid });
+  const updateGassMutation = useMutation({
+    mutationFn: () => {
+      return axios.put(`decoweb/api/gasses/${gass.id}`, {
+        strategy: gass.strategy,
+        oxygen: oxygen,
+        helium: helium,
+      });
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["strategies"]);
+    },
+  });
 
-  const setOxygenLevel = (value: number) =>
-    dispatch({
-      type: DivePlanActionType.SET_OXYGEN_LEVEL,
-      gassUuid: gass.gassUuid,
-      oxygen: value,
-    });
-
-  const setHeliumLevel = (value: number) =>
-    dispatch({
-      type: DivePlanActionType.SET_HELIUM_LEVEL,
-      gassUuid: gass.gassUuid,
-      helium: value,
-    });
+  const removeGassMutation = useMutation({
+    mutationFn: () => {
+      return axios.delete(`decoweb/api/gasses/${gass.id}`);
+    },
+    onSuccess: (data) => queryClient.invalidateQueries(["strategies"]),
+  });
 
   return (
     <Box
@@ -49,30 +56,36 @@ export default function Gass({ id, gass, removable }: GassProps) {
             startIcon={<DeleteIcon />}
             disableElevation
             disabled={!removable}
-            onClick={removeGass}
+            onClick={() => removeGassMutation.mutate()}
           >
             Remove gass
           </Button>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Typography>Oxygen {gass.oxygen} %</Typography>
+          <Typography>Oxygen {oxygen} %</Typography>
           <Slider
-            value={gass.oxygen}
+            value={oxygen}
             aria-label="Default"
             valueLabelDisplay="auto"
-            onChange={(_event, newValue, _activeThumb) => {
-              setOxygenLevel(Array.isArray(newValue) ? newValue[0] : newValue);
+            onChange={(_event, value, _) => {
+              setOxygenLevel(value as number);
+            }}
+            onChangeCommitted={(_event, _) => {
+              updateGassMutation.mutate();
             }}
           />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Typography>Helium {gass.helium} %</Typography>
+          <Typography>Helium {helium} %</Typography>
           <Slider
-            value={gass.helium}
+            value={helium}
             aria-label="Default"
             valueLabelDisplay="auto"
-            onChange={(_event, newValue, _activeThumb) => {
-              setHeliumLevel(Array.isArray(newValue) ? newValue[0] : newValue);
+            onChange={(_event, value, _) => {
+              setHeliumLevel(value as number);
+            }}
+            onChangeCommitted={(_event, _) => {
+              updateGassMutation.mutate();
             }}
           />
         </Grid>

@@ -1,18 +1,31 @@
 import { LineChart } from "@mui/x-charts/LineChart";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 type DivePointType = {
   [key: string]: string;
 };
 
 type DiveChartProps = {
-  diveProfiles: DivePointType[];
   keyToLabel: Map<string, string>;
 };
 
-export default function DiveChart({
-  diveProfiles,
-  keyToLabel,
-}: DiveChartProps) {
+export default function DiveChart({ keyToLabel }: DiveChartProps) {
+  const diveProfiles = useQuery({
+    queryKey: ["strategies", "diveProfiles"],
+    queryFn: async () => {
+      const response = await axios.get("decoweb/api/plan-dive");
+      return response.data;
+    },
+  });
+
+  if (diveProfiles.isLoading) return null;
+
+  if (diveProfiles.isError) {
+    console.log("Error: ", diveProfiles.error);
+    return null;
+  }
+
   return (
     <LineChart
       grid={{ horizontal: true }}
@@ -27,14 +40,13 @@ export default function DiveChart({
           reverse: true,
         },
       ]}
-      // series={Object.keys(keyToLabel).map((key) => ({
       series={Array.from(keyToLabel.keys()).map((key: string) => ({
         dataKey: key,
         label: keyToLabel.get(key),
         showMark: false,
         curve: "linear",
       }))}
-      dataset={diveProfiles}
+      dataset={diveProfiles.data}
       height={300}
       legend={{ hidden: true }}
       margin={{ top: 10 }}

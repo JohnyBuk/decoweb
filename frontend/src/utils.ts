@@ -30,9 +30,9 @@ export function separateStrategies(divePlan: DivePlanType): StrategyType[] {
 
 export function getKeyToLabel(strategies: StrategyType[]): Map<string, string> {
   let keyToLabel = new Map<string, string>();
-  strategies.forEach((strategy, i) => {
+  strategies.data.forEach((strategy, i) => {
     keyToLabel.set(
-      strategy.uuid,
+      strategy.id,
       "Strategy " + (i + 1).toString() + " depth (m)"
     );
   });

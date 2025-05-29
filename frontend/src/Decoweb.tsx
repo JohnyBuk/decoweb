@@ -9,92 +9,80 @@ import Strategy from "./Strategy";
 import { DivePlanActionType } from "./reducer";
 import { getKeyToLabel, separateStrategies } from "./utils";
 import { DivePlanContext } from "./context";
+import {
+  useQuery,
+  useQueries,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import axios from "axios";
+
+type StrategyType = {
+  id: number;
+  target_depth: number;
+  bottom_time: number;
+};
 
 export default function Decoweb() {
-  const { divePlan, dispatch } = useContext(DivePlanContext);
-  const strategies = separateStrategies(divePlan);
-  const [diveProfile, setDiveProfile] = useState([]);
+  const queryClient = useQueryClient();
 
-  const addStartegy = () => dispatch({ type: DivePlanActionType.ADD_STRATEGY });
+  const strategies = useQuery({
+    queryKey: ["strategies"],
+    queryFn: async () => {
+      const response = await axios.get("decoweb/api/strategies");
+      return response.data;
+    },
+  });
 
-  const setTargetDepth = (depth: number) =>
-    dispatch({ type: DivePlanActionType.SET_TAREGT_DEPTH, targetDepth: depth });
+  const addStrategyMutation = useMutation({
+    mutationFn: (newStrategy: StrategyType) => {
+      return axios.post(`decoweb/api/strategies?empty=false`, newStrategy);
+    },
+    onMutate: async (newStrategy) => {
+      // Cancel any outgoing refetches for that `queryKey`
+      await queryClient.cancelQueries({ queryKey: ["strategies"] });
 
-  const setBottomTime = (time: number) =>
-    dispatch({ type: DivePlanActionType.SET_BOTTOM_TIME, bottomTime: time });
+      // Snapshot the previous value
+      const prevData = queryClient.getQueryData(["strategies"]);
 
-  const fetchDiveProfiles = () => {
-    fetch("plan-dive/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        targetDepth: divePlan.targetDepth,
-        bottomTime: divePlan.bottomTime,
-        strategies: strategies,
-      }),
-    })
-      .then((response) => response.json())
-      .then((response) => {
-        setDiveProfile(response["profiles"]);
-      })
-      .catch((error) => console.error("Error:", error));
-  };
+      // Optimistically update to the new value
+      queryClient.setQueryData(["strategies"], (previous) => [
+        ...previous,
+        newStrategy,
+      ]);
 
-  // show default dive profile graph
-  useEffect(() => fetchDiveProfiles(), []);
+      // Return a context with the previous and new data
+      return prevData;
+    },
+    onError: (err, newStrategy, context) => {
+      queryClient.setQueryData(["strategies"], context.prevData);
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["strategies"] });
+    },
+  });
+
+  if (strategies.isLoading) return null;
+
+  if (strategies.isError) {
+    console.log("Error: ", strategies.error);
+    return null;
+  }
+
+  console.log(strategies.data);
 
   return (
     <Container fixed sx={{ marginBottom: 10 }}>
-      <DiveChart
-        diveProfiles={diveProfile}
-        keyToLabel={getKeyToLabel(strategies)}
-      />
-      <Grid container columnSpacing={5}>
-        <Grid size={{ xs: 12, md: 5 }}>
-          <Typography>Target depth {divePlan.targetDepth} meters</Typography>
-          <Slider
-            value={divePlan.targetDepth}
-            aria-label="Default"
-            valueLabelDisplay="auto"
-            onChange={(_event, newValue, _activeThumb) => {
-              setTargetDepth(Array.isArray(newValue) ? newValue[0] : newValue);
-            }}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, md: 5 }}>
-          <Typography>Bottom time {divePlan.bottomTime} minutes</Typography>
-          <Slider
-            value={divePlan.bottomTime}
-            aria-label="Default"
-            valueLabelDisplay="auto"
-            onChange={(_event, newValue, _activeThumb) => {
-              setBottomTime(Array.isArray(newValue) ? newValue[0] : newValue);
-            }}
-          />
-        </Grid>
-        <Grid
-          size={{ xs: 12, md: 2 }}
-          sx={{ display: "flex", justifyContent: "end" }}
-        >
-          <Button
-            variant="contained"
-            startIcon={<ScubaDivingIcon />}
-            disableElevation
-            onClick={fetchDiveProfiles}
-          >
-            Plan dive
-          </Button>
-        </Grid>
-      </Grid>
+      {<DiveChart keyToLabel={getKeyToLabel(strategies)} />}
       <TransitionGroup>
-        {strategies.map((strategy, i) => (
+        {strategies.data.map((strategy, i) => (
           <Collapse key={i}>
             <Strategy
+              key={i}
               id={i}
               strategy={strategy}
-              removable={strategies.length > 1}
+              removable={strategies.data.length > 1}
             />
           </Collapse>
         ))}
@@ -103,7 +91,13 @@ export default function Decoweb() {
         variant="contained"
         startIcon={<AddIcon />}
         disableElevation
-        onClick={addStartegy}
+        onClick={() =>
+          addStrategyMutation.mutate({
+            target_depth: 20,
+            bottom_time: 10,
+            id: -1, // Temporary ID, will be replaced by the server
+          })
+        }
       >
         Add strategy
       </Button>
