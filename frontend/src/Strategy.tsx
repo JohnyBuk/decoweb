@@ -1,15 +1,14 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Box, Button, Collapse, Slider, Typography } from "@mui/material";
+import { TransitionGroup } from "react-transition-group";
+import { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import Grid from "@mui/material/Grid2";
-import Gas from "./Gas.js";
-import { useContext, useState } from "react";
-import { DivePlanContext } from "./context.js";
-import { DivePlanActionType } from "./reducer.js";
-import { TransitionGroup } from "react-transition-group";
-import { GasType, StrategyType } from "./types.js";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+
+import { GasType, StrategyType } from "./types";
+import Gas from "./Gas";
 
 type StrategyProps = {
   index: number;
@@ -17,7 +16,11 @@ type StrategyProps = {
   removable: boolean;
 };
 
-export default function Strategy({ index, strategy, removable }: StrategyProps) {
+export default function Strategy({
+  index,
+  strategy,
+  removable,
+}: StrategyProps) {
   const [targetDepth, setTargetDepth] = useState(strategy.target_depth);
   const [bottomTime, setBottomTime] = useState(strategy.bottom_time);
   const queryClient = useQueryClient();
@@ -42,7 +45,7 @@ export default function Strategy({ index, strategy, removable }: StrategyProps) 
         bottom_time: bottomTime,
       });
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["strategies", strategy.id],
         exact: true,
@@ -62,7 +65,10 @@ export default function Strategy({ index, strategy, removable }: StrategyProps) 
       await queryClient.cancelQueries({ queryKey: ["strategies"] });
 
       // Snapshot the previous value
-      const prevStrategies = queryClient.getQueryData(["strategies"]);
+      const prevStrategies = queryClient.getQueryData([
+        "strategies",
+      ]) as StrategyType[];
+
       const newStrategies = prevStrategies.filter(
         (prevStrategy) => strategy.id != prevStrategy.id
       );
@@ -71,10 +77,11 @@ export default function Strategy({ index, strategy, removable }: StrategyProps) 
       queryClient.setQueryData(["strategies"], newStrategies);
 
       // Return a context with the previous and new data
-      return prevStrategies;
+      return { prevStrategies };
     },
-    onError: (err, newStrategy, context) => {
-      queryClient.setQueryData(["strategies"], context.prevStrategies);
+    onError: (_error, _variables, context) => {
+      if (context?.prevStrategies)
+        queryClient.setQueryData(["strategies"], context.prevStrategies);
     },
     onSettled: () => {
       // Always refetch after error or success
@@ -83,10 +90,10 @@ export default function Strategy({ index, strategy, removable }: StrategyProps) 
   });
 
   const addGasMutation = useMutation({
-    mutationFn: (newGass) => {
+    mutationFn: (newGass: GasType) => {
       return axios.post(`decoweb/api/gasses`, newGass);
     },
-    onMutate: async (newGass) => {
+    onMutate: async (newGass: GasType) => {
       // Cancel any outgoing refetches for that `queryKey`
       await queryClient.cancelQueries({
         queryKey: ["strategies", strategy.id],
@@ -97,18 +104,19 @@ export default function Strategy({ index, strategy, removable }: StrategyProps) 
       const prevData = queryClient.getQueryData(["strategies", strategy.id]);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(["strategies", strategy.id], (previous) => [
-        ...previous,
-        newGass,
-      ]);
+      queryClient.setQueryData(
+        ["strategies", strategy.id],
+        (previous: GasType[]) => [...previous, newGass]
+      );
 
       // Return a context with the previous and new data
-      return prevData;
+      return { prevData };
     },
-    onError: (err, newGasses, context) => {
-      queryClient.setQueryData(["strategies", strategy.id], context.prevData);
+    onError: (_error, _variables, context) => {
+      if (context?.prevData)
+        queryClient.setQueryData(["strategies", strategy.id], context.prevData);
     },
-    onSettled: (data) => {
+    onSettled: () => {
       // Always refetch after error or success
       queryClient.invalidateQueries({
         queryKey: ["strategies", strategy.id],
@@ -119,6 +127,15 @@ export default function Strategy({ index, strategy, removable }: StrategyProps) 
       });
     },
   });
+
+  const addGas = () => {
+    const newGas = {
+      strategy: strategy.id,
+      oxygen: 21,
+      helium: 0,
+    } as GasType;
+    addGasMutation.mutate(newGas);
+  };
 
   if (gasses.isError) {
     console.log("Error: ", gasses.error);
@@ -175,7 +192,7 @@ export default function Strategy({ index, strategy, removable }: StrategyProps) 
       </Grid>
       {gasses.isLoading ? null : (
         <TransitionGroup>
-          {gasses.data.map((gas, i) => (
+          {gasses.data.map((gas: GasType, i: number) => (
             <Collapse key={i}>
               <Gas
                 key={i}
@@ -206,13 +223,7 @@ export default function Strategy({ index, strategy, removable }: StrategyProps) 
           variant="contained"
           startIcon={<AddIcon />}
           disableElevation
-          onClick={() =>
-            addGasMutation.mutate({
-              strategy: strategy.id,
-              oxygen: 21,
-              helium: 0,
-            })
-          }
+          onClick={addGas}
           sx={{
             backgroundColor: "white",
             color: "#1976d2",

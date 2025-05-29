@@ -1,27 +1,12 @@
-import { useEffect, useState, useContext } from "react";
-import { Button, Collapse, Container, Slider, Typography } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import ScubaDivingIcon from "@mui/icons-material/ScubaDiving";
-import Grid from "@mui/material/Grid2";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button, Collapse, Container } from "@mui/material";
 import { TransitionGroup } from "react-transition-group";
-import DiveChart from "./DiveChart";
-import Strategy from "./Strategy";
-import { DivePlanActionType } from "./reducer";
-import { getKeyToLabel, separateStrategies } from "./utils";
-import { DivePlanContext } from "./context";
-import {
-  useQuery,
-  useQueries,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
 
-type StrategyType = {
-  id: number;
-  target_depth: number;
-  bottom_time: number;
-};
+import DiveChart from "./DiveChart";
+import Strategy from "./Strategy";
+import { StrategyType } from "./types";
 
 export default function Decoweb() {
   const queryClient = useQueryClient();
@@ -38,30 +23,40 @@ export default function Decoweb() {
     mutationFn: (newStrategy: StrategyType) => {
       return axios.post(`decoweb/api/strategies?empty=false`, newStrategy);
     },
-    onMutate: async (newStrategy) => {
+    onMutate: async (newStrategy: StrategyType) => {
       // Cancel any outgoing refetches for that `queryKey`
       await queryClient.cancelQueries({ queryKey: ["strategies"] });
 
       // Snapshot the previous value
-      const prevData = queryClient.getQueryData(["strategies"]);
+      const prevStrategies = queryClient.getQueryData(["strategies"]);
 
       // Optimistically update to the new value
-      queryClient.setQueryData(["strategies"], (previous) => [
+      queryClient.setQueryData(["strategies"], (previous: StrategyType[]) => [
         ...previous,
         newStrategy,
       ]);
 
       // Return a context with the previous and new data
-      return prevData;
+      return { prevStrategies };
     },
-    onError: (err, newStrategy, context) => {
-      queryClient.setQueryData(["strategies"], context.prevData);
+    onError: (_error, _variables, context) => {
+      if (context?.prevStrategies)
+        queryClient.setQueryData(["strategies"], context.prevStrategies);
     },
     onSettled: () => {
       // Always refetch after error or success
-      queryClient.invalidateQueries(["strategies"]);
+      queryClient.invalidateQueries({ queryKey: ["strategies"] });
     },
   });
+
+  const addStrategy = () => {
+    const newStrategy = {
+      id: -1, // Temporary ID, will be replaced by the server
+      target_depth: 20,
+      bottom_time: 10,
+    } as StrategyType;
+    addStrategyMutation.mutate(newStrategy);
+  };
 
   if (strategies.isLoading) return null;
 
@@ -72,9 +67,9 @@ export default function Decoweb() {
 
   return (
     <Container fixed sx={{ marginBottom: 10 }}>
-      {<DiveChart strategies={strategies} />}
+      {<DiveChart strategies={strategies.data} />}
       <TransitionGroup>
-        {strategies.data.map((strategy, i) => (
+        {strategies.data.map((strategy: StrategyType, i: number) => (
           <Collapse key={i}>
             <Strategy
               key={i}
@@ -89,13 +84,7 @@ export default function Decoweb() {
         variant="contained"
         startIcon={<AddIcon />}
         disableElevation
-        onClick={() =>
-          addStrategyMutation.mutate({
-            target_depth: 20,
-            bottom_time: 10,
-            id: -1, // Temporary ID, will be replaced by the server
-          })
-        }
+        onClick={addStrategy}
       >
         Add strategy
       </Button>

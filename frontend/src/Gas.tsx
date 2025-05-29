@@ -1,16 +1,16 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Box, Button, Slider, Typography } from "@mui/material";
+import { GasType, StrategyType } from "./types";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Grid from "@mui/material/Grid2";
-import { useContext, useState } from "react";
-import { DivePlanContext } from "./context";
-import { DivePlanActionType } from "./reducer";
-import { GasType } from "./types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+
+import { useState } from "react";
 
 type GasProps = {
   index: number;
   gas: GasType;
+  strategy: StrategyType;
   removable: boolean;
 };
 
@@ -27,7 +27,7 @@ export default function Gas({ index, gas, strategy, removable }: GasProps) {
         helium: helium,
       });
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["strategies", strategy.id],
         exact: true,
@@ -50,17 +50,28 @@ export default function Gas({ index, gas, strategy, removable }: GasProps) {
       });
 
       // Snapshot the previous value
-      const prevGasses = queryClient.getQueryData(["strategies", strategy.id]);
-      const newGasses = prevGasses.filter((prevGas) => gas.id != prevGas.id);
+      const prevGasses = queryClient.getQueryData([
+        "strategies",
+        strategy.id,
+      ]) as GasType[];
+
+      // Filter gasses
+      const newGasses: GasType[] = prevGasses.filter(
+        (prevGas: GasType) => gas.id != prevGas.id
+      );
 
       // Optimistically update to the new value
       queryClient.setQueryData(["strategies", strategy.id], newGasses);
 
       // Return a context with the previous and new data
-      return prevGasses;
+      return { prevGasses };
     },
-    onError: (err, newGasses, context) => {
-      queryClient.setQueryData(["strategies", strategy.id], context.prevGasses);
+    onError: (_error, _variables, context) => {
+      if (context?.prevGasses)
+        queryClient.setQueryData(
+          ["strategies", strategy.id],
+          context.prevGasses
+        );
     },
     onSettled: () => {
       // Always refetch after error or success

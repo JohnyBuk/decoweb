@@ -1,13 +1,14 @@
 export type GasType = {
-  strategyUuid: string;
-  gassUuid: string;
+  id: string;
+  strategy: number;
   oxygen: number;
   helium: number;
 };
 
 export type StrategyType = {
-  uuid: string;
-  gasses: GasType[];
+  id: number;
+  target_depth: number;
+  bottom_time: number;
 };
 
 export type DivePlanType = {
