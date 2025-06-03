@@ -1,4 +1,4 @@
-from ninja import NinjaAPI, Router
+from ninja import Router
 from ninja.errors import HttpError, AuthorizationError
 from django.shortcuts import get_object_or_404
 
@@ -7,10 +7,10 @@ from .models import Strategy, Gas
 from .schemas import GasSchemaOut, GasSchemaIn, StrategySchemaOut, SrategySchemaIn
 
 
-api = NinjaAPI(title="Decoweb API")
+router = Router()
 
 
-@api.get("/plan-dive")
+@router.get("/plan-dive")
 def plan_dive(request):
     """
     Plan dive strategies
@@ -29,7 +29,7 @@ def plan_dive(request):
         raise HttpError(500, f"Error: {e}")
 
 
-@api.get("/strategies", response=list[StrategySchemaOut])
+@router.get("/strategies", response=list[StrategySchemaOut])
 def get_strategies(request, keep_empty: bool = False):
     """
     Get all strategies
@@ -46,7 +46,7 @@ def get_strategies(request, keep_empty: bool = False):
     return []
 
 
-@api.get("/strategies/{id}", response=StrategySchemaOut)
+@router.get("/strategies/{id}", response=StrategySchemaOut)
 def get_strategy(request, id: int):
     """
     Get strategy
@@ -61,7 +61,7 @@ def get_strategy(request, id: int):
     raise AuthorizationError()
 
 
-@api.post("/strategies", response=StrategySchemaOut)
+@router.post("/strategies", response=StrategySchemaOut)
 def create_strategy(request, payload: SrategySchemaIn, empty: bool = True):
     """
     Create new strategy, possibly with default gas (air)
@@ -82,7 +82,7 @@ def create_strategy(request, payload: SrategySchemaIn, empty: bool = True):
     return strategy
 
 
-@api.delete("/strategies/{id}", response=StrategySchemaOut)
+@router.delete("/strategies/{id}", response=StrategySchemaOut)
 def delete_strategy(request, id: int):
     """
     Delete strategy
@@ -100,7 +100,7 @@ def delete_strategy(request, id: int):
     return strategy
 
 
-@api.put("/strategies/{id}", response=StrategySchemaOut)
+@router.put("/strategies/{id}", response=StrategySchemaOut)
 def update_strategy(request, id: int, payload: SrategySchemaIn):
     """
     Update strategy
@@ -120,7 +120,7 @@ def update_strategy(request, id: int, payload: SrategySchemaIn):
     return strategy
 
 
-@api.get("/strategies/{id}/gasses/", response=list[GasSchemaOut])
+@router.get("/strategies/{id}/gasses/", response=list[GasSchemaOut])
 def get_strategy_gasses(request, id: int):
     """
     Get all gasses for strategy
@@ -135,7 +135,7 @@ def get_strategy_gasses(request, id: int):
     raise AuthorizationError()
 
 
-@api.get("/gasses", response=list[GasSchemaOut])
+@router.get("/gasses", response=list[GasSchemaOut])
 def get_gasses(request):
     """
     Get all gasses
@@ -148,7 +148,7 @@ def get_gasses(request):
     return []
 
 
-@api.get("/gasses/{id}", response=GasSchemaOut)
+@router.get("/gasses/{id}", response=GasSchemaOut)
 def get_gas(request, id: int):
     """
     Get gas
@@ -166,7 +166,7 @@ def get_gas(request, id: int):
     return gas
 
 
-@api.post("/gasses", response=GasSchemaOut)
+@router.post("/gasses", response=GasSchemaOut)
 def create_gas(request, payload: GasSchemaIn):
     """
     Create new gas
@@ -185,7 +185,7 @@ def create_gas(request, payload: GasSchemaIn):
     )
 
 
-@api.delete("/gasses/{id}", response=GasSchemaOut)
+@router.delete("/gasses/{id}", response=GasSchemaOut)
 def delete_gas(request, id: int):
     """
     Delete gas
@@ -204,7 +204,7 @@ def delete_gas(request, id: int):
     return gas
 
 
-@api.put("/gasses/{id}", response=GasSchemaOut)
+@router.put("/gasses/{id}", response=GasSchemaOut)
 def update_gas(request, id: int, payload: GasSchemaIn):
     """
     Update gas
