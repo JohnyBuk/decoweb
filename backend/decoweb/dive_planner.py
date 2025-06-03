@@ -5,6 +5,8 @@ from .models import Strategy, Gas
 
 class DivePlanner:
     def plan_dive(self, strategies: list[Strategy]):
+        if not len(strategies):
+            return {}
         result = [self.plan_strategy(strategy) for strategy in strategies]
         return self.create_dataset(result)
 
