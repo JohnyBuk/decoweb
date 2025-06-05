@@ -17,4 +17,4 @@ class Gas(models.Model):
     helium = models.IntegerField(default=0)
 
     def __str__(self):
-        return f"Gas for {self.strategy}: {self.oxygen}% o2 {self.helium}% he"
+        return f"Gas {self.oxygen} % o2 {self.helium} % he"
