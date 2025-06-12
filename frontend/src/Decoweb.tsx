@@ -14,14 +14,16 @@ export default function Decoweb() {
   const strategies = useQuery({
     queryKey: ["strategies"],
     queryFn: async () => {
-      const response = await axios.get("decoweb/api/strategies");
+      const response = await axios.get(
+        "/api/decoweb/strategies?keep_empty=false"
+      );
       return response.data;
     },
   });
 
   const addStrategyMutation = useMutation({
     mutationFn: (newStrategy: StrategyType) => {
-      return axios.post(`decoweb/api/strategies?empty=false`, newStrategy);
+      return axios.post(`api/decoweb/strategies?empty=false`, newStrategy);
     },
     onMutate: async (newStrategy: StrategyType) => {
       // Cancel any outgoing refetches for that `queryKey`
@@ -46,12 +48,13 @@ export default function Decoweb() {
     onSettled: () => {
       // Always refetch after error or success
       queryClient.invalidateQueries({ queryKey: ["strategies"] });
+      queryClient.invalidateQueries({ queryKey: ["profiles"] });
     },
   });
 
   const addStrategy = () => {
     const newStrategy = {
-      id: -1, // Temporary ID, will be replaced by the server
+      id: -1, // Temporary ID, will be replaced by the backend
       target_depth: 20,
       bottom_time: 10,
     } as StrategyType;

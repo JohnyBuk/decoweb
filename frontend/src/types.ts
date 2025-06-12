@@ -1,5 +1,5 @@
 export type GasType = {
-  id: string;
+  id: number;
   strategy: number;
   oxygen: number;
   helium: number;

@@ -25,17 +25,17 @@ export default function DiveChart({ strategies }: DiveChartProps) {
   const diveProfiles = useQuery({
     queryKey: ["profiles"],
     queryFn: async () => {
-      const response = await axios.get("decoweb/api/plan-dive");
+      const response = await axios.get("api/decoweb/plan-dive");
       return response.data;
     },
   });
-
-  if (diveProfiles.isLoading) return null;
 
   if (diveProfiles.isError) {
     console.log("Error: ", diveProfiles.error);
     return null;
   }
+
+  if (diveProfiles.isLoading || !Array.isArray(diveProfiles.data)) return null;
 
   return (
     <LineChart

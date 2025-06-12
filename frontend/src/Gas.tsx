@@ -21,7 +21,7 @@ export default function Gas({ index, gas, strategy, removable }: GasProps) {
 
   const updateGasMutation = useMutation({
     mutationFn: () => {
-      return axios.put(`decoweb/api/gasses/${gas.id}`, {
+      return axios.put(`api/decoweb/gasses/${gas.id}`, {
         strategy: gas.strategy,
         oxygen: oxygen,
         helium: helium,
@@ -40,7 +40,7 @@ export default function Gas({ index, gas, strategy, removable }: GasProps) {
 
   const removeGasMutation = useMutation({
     mutationFn: () => {
-      return axios.delete(`decoweb/api/gasses/${gas.id}`);
+      return axios.delete(`api/decoweb/gasses/${gas.id}`);
     },
     onMutate: async () => {
       // Cancel any outgoing refetches for that `queryKey`
@@ -82,6 +82,9 @@ export default function Gas({ index, gas, strategy, removable }: GasProps) {
       queryClient.invalidateQueries({
         queryKey: ["profiles"],
       });
+      console.log(gas);
+      setOxygenLevel(gas.oxygen);
+      setHeliumLevel(gas.helium);
     },
   });
 
@@ -95,7 +98,7 @@ export default function Gas({ index, gas, strategy, removable }: GasProps) {
           sx={{ display: "flex", justifyContent: "space-between" }}
         >
           <Typography variant="h6" color="#1976d2">
-            Gas {index + 1}
+            Gas {index + 1} ({gas.id})
           </Typography>
           <Button
             variant="contained"

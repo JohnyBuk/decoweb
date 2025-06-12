@@ -7,7 +7,7 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 5173,
     proxy: {
-      "/decoweb/api/": {
+      "/api/decoweb/": {
         target: "http://backend:8000/",
         changeOrigin: true,
       },
@@ -16,7 +16,7 @@ export default defineConfig({
   preview: {
     port: 5173,
     proxy: {
-      "/decoweb/api/": {
+      "/api/decoweb/": {
         target: "http://backend:8000/",
         changeOrigin: true,
       },

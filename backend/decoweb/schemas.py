@@ -9,7 +9,7 @@ class GasSchemaOut(ModelSchema):
 
 
 class GasSchemaIn(Schema):
-    strategy_id: int
+    strategy: int
     oxygen: int = 21
     helium: int = 0
 

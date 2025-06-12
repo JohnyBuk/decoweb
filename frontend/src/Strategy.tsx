@@ -32,7 +32,7 @@ export default function Strategy({
         return [];
       }
       const response = await axios.get(
-        `decoweb/api/strategies/${strategy.id}/gasses`
+        `api/decoweb/strategies/${strategy.id}/gasses`
       );
       return await response.data;
     },
@@ -40,7 +40,7 @@ export default function Strategy({
 
   const updateStrategyMutation = useMutation({
     mutationFn: () => {
-      return axios.put(`decoweb/api/strategies/${strategy.id}`, {
+      return axios.put(`api/decoweb/strategies/${strategy.id}`, {
         target_depth: targetDepth,
         bottom_time: bottomTime,
       });
@@ -58,7 +58,7 @@ export default function Strategy({
 
   const removeStrategyMutation = useMutation({
     mutationFn: () => {
-      return axios.delete(`decoweb/api/strategies/${strategy.id}`);
+      return axios.delete(`api/decoweb/strategies/${strategy.id}`);
     },
     onMutate: async () => {
       // Cancel any outgoing refetches for that `queryKey`
@@ -83,15 +83,16 @@ export default function Strategy({
       if (context?.prevStrategies)
         queryClient.setQueryData(["strategies"], context.prevStrategies);
     },
-    onSettled: () => {
-      // Always refetch after error or success
-      queryClient.invalidateQueries({ queryKey: ["strategies"] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profiles"] });
+      setTargetDepth(strategy.target_depth);
+      setBottomTime(strategy.bottom_time);
     },
   });
 
   const addGasMutation = useMutation({
     mutationFn: (newGass: GasType) => {
-      return axios.post(`decoweb/api/gasses`, newGass);
+      return axios.post(`api/decoweb/gasses`, newGass);
     },
     onMutate: async (newGass: GasType) => {
       // Cancel any outgoing refetches for that `queryKey`
@@ -153,7 +154,7 @@ export default function Strategy({
       }}
     >
       <Typography variant="h5" color="white" mb={1}>
-        Strategy {index + 1}
+        Strategy {index + 1} ({strategy.id})
       </Typography>
 
       <Grid container columnSpacing={5}>

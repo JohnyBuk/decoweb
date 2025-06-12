@@ -44,7 +44,7 @@ def get_strategies(request, keep_empty: bool = False):
             return Strategy.objects.filter(id__in=ids)
         return Strategy.objects.filter(id__in=ids, gas__isnull=False)
     else:
-        raise AuthorizationError() 
+        raise AuthorizationError()
 
 
 @router.get("/strategies/{id}", response=StrategySchemaOut)
@@ -116,7 +116,7 @@ def update_strategy(request, id: int, payload: SrategySchemaIn):
         pass
     else:
         raise AuthorizationError()
-    
+
     strategy.target_depth = payload.target_depth
     strategy.bottom_time = payload.bottom_time
     strategy.save()
@@ -150,7 +150,7 @@ def get_gasses(request):
         ids = request.session["strategies"]
         return Gas.objects.filter(strategy__id__in=ids)
     else:
-        raise AuthorizationError() 
+        raise AuthorizationError()
 
 
 @router.get("/gasses/{id}", response=GasSchemaOut)
@@ -176,7 +176,7 @@ def create_gas(request, payload: GasSchemaIn):
     """
     Create new gas
     """
-    strategy = get_object_or_404(Strategy, id=payload.strategy_id)
+    strategy = get_object_or_404(Strategy, id=payload.strategy)
     if request.user.is_authenticated and strategy.user == request.user:
         pass
     elif (
@@ -190,7 +190,7 @@ def create_gas(request, payload: GasSchemaIn):
     )
 
 
-@router.delete("/gasses/{id}", response=GasSchemaIn)
+@router.delete("/gasses/{id}", response=GasSchemaOut)
 def delete_gas(request, id: int):
     """
     Delete gas
@@ -224,7 +224,7 @@ def update_gas(request, id: int, payload: GasSchemaIn):
         pass
     else:
         raise AuthorizationError()
-    
+
     gas.oxygen = payload.oxygen
     gas.helium = payload.helium
     gas.save()
