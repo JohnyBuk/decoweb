@@ -43,8 +43,7 @@ def get_strategies(request, keep_empty: bool = False):
         if keep_empty:
             return Strategy.objects.filter(id__in=ids)
         return Strategy.objects.filter(id__in=ids, gas__isnull=False)
-    else:
-        raise AuthorizationError()
+    return []
 
 
 @router.get("/strategies/{id}", response=StrategySchemaOut)
@@ -59,8 +58,7 @@ def get_strategy(request, id: int):
         "strategies" in request.session and strategy.id in request.session["strategies"]
     ):
         return strategy
-    else:
-        raise AuthorizationError()
+    raise AuthorizationError()
 
 
 @router.post("/strategies", response=StrategySchemaOut)

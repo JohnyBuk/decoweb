@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./frontend:/app:rw
+      - frontend_node_modules:/app/node_modules
     depends_on:
       - backend-development
     links:
@@ -30,7 +31,7 @@ services:
       - 8000:8000
     profiles:
       - development
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
   # production services
   frontend-production:
@@ -54,7 +55,7 @@ services:
       - ./backend/static:/app/static
     profiles:
       - production
-    command: bash -c "python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8000 backend.wsgi:application"
+    command: bash -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8000 backend.wsgi:application"
 
   nginx:
     image: nginx:latest
@@ -77,3 +78,6 @@ services:
       - 443:443
     profiles:
       - production
+
+volumes:
+  frontend_node_modules:

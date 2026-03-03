@@ -27,8 +27,9 @@ class TestStrategyApi(TestCase):
         strategy_in = SrategySchemaIn(target_depth=22, bottom_time=11)
         strategy_out = StrategySchemaOut(id=1, target_depth=22, bottom_time=11)
 
-        response = client.get("/strategies")
-        self.assertEqual(response.status_code, 403)
+        response = client.get("/strategies?keep_empty=true")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 0)
 
         response = client.post(
             "/strategies?empty=false",
@@ -111,7 +112,8 @@ class TestStrategyApi(TestCase):
         strategy_out = StrategySchemaOut(id=1, target_depth=22, bottom_time=11)
 
         response = client.get("/strategies")
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, [])
 
         response = client.post(
             "/strategies?empty=true",
@@ -135,7 +137,8 @@ class TestStrategyApi(TestCase):
         strategy_out = StrategySchemaOut(id=1, target_depth=22, bottom_time=11)
 
         response = client.get("/strategies")
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, [])
 
         response = client.post(
             "/strategies?empty=false",

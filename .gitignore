@@ -1,3 +1,4 @@
 TODO
 certbot/conf
 certbot/www
+.env

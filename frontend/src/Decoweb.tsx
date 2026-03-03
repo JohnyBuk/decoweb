@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button, Collapse, Container } from "@mui/material";
 import { TransitionGroup } from "react-transition-group";
@@ -60,6 +61,12 @@ export default function Decoweb() {
     } as StrategyType;
     addStrategyMutation.mutate(newStrategy);
   };
+
+  useEffect(() => {
+    if (strategies.data?.length === 0 && !addStrategyMutation.isPending) {
+      addStrategy();
+    }
+  }, [strategies.data]);
 
   if (strategies.isLoading) return null;
 
