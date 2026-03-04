@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button, Collapse, Container } from "@mui/material";
+import { Box, Button, Collapse, Container } from "@mui/material";
 import { TransitionGroup } from "react-transition-group";
 import AddIcon from "@mui/icons-material/Add";
 import axios from "axios";
@@ -78,18 +78,26 @@ export default function Decoweb() {
   return (
     <Container fixed sx={{ marginBottom: 10 }}>
       {<DiveChart strategies={strategies.data} />}
-      <TransitionGroup>
-        {strategies.data.map((strategy: StrategyType, i: number) => (
-          <Collapse key={i}>
-            <Strategy
-              key={i}
-              index={i}
-              strategy={strategy}
-              removable={strategies.data.length > 1}
-            />
-          </Collapse>
-        ))}
-      </TransitionGroup>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+          gap: 2,
+          mt: 3,
+        }}
+      >
+        <TransitionGroup component={null}>
+          {strategies.data.map((strategy: StrategyType, i: number) => (
+            <Collapse key={i}>
+              <Strategy
+                index={i}
+                strategy={strategy}
+                removable={strategies.data.length > 1}
+              />
+            </Collapse>
+          ))}
+        </TransitionGroup>
+      </Box>
       <Button
         variant="contained"
         startIcon={<AddIcon />}

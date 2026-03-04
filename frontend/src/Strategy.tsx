@@ -149,8 +149,7 @@ export default function Strategy({
         backgroundColor: "#1976d2",
         borderRadius: 1,
         p: 1,
-        marginBottom: 3,
-        marginTop: index === 0 ? 3 : 0,
+        marginBottom: 2,
       }}
     >
       <Typography variant="h5" color="white" mb={1}>
@@ -192,19 +191,26 @@ export default function Strategy({
         </Grid>
       </Grid>
       {gasses.isLoading ? null : (
-        <TransitionGroup>
-          {gasses.data.map((gas: GasType, i: number) => (
-            <Collapse key={i}>
-              <Gas
-                key={i}
-                index={i}
-                gas={gas}
-                strategy={strategy}
-                removable={gasses.data.length > 1}
-              />
-            </Collapse>
-          ))}
-        </TransitionGroup>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+            gap: 1,
+          }}
+        >
+          <TransitionGroup component={null}>
+            {gasses.data.map((gas: GasType, i: number) => (
+              <Collapse key={i}>
+                <Gas
+                  index={i}
+                  gas={gas}
+                  strategy={strategy}
+                  removable={gasses.data.length > 1}
+                />
+              </Collapse>
+            ))}
+          </TransitionGroup>
+        </Box>
       )}
       <Box display={"flex"} justifyContent={"space-between"}>
         <Button
