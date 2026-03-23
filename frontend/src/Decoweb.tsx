@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Box, Button, Collapse, Container } from "@mui/material";
 import { TransitionGroup } from "react-transition-group";
@@ -68,6 +68,18 @@ export default function Decoweb() {
     }
   }, [strategies.data]);
 
+  const [gridCols, setGridCols] = useState(0);
+  useEffect(() => {
+    if (!strategies.data) return;
+    const count = strategies.data.length;
+    if (count >= gridCols) {
+      setGridCols(count);
+    } else {
+      const id = setTimeout(() => setGridCols(count), 350);
+      return () => clearTimeout(id);
+    }
+  }, [strategies.data?.length]);
+
   if (strategies.isLoading) return null;
 
   if (strategies.isError) {
@@ -81,9 +93,13 @@ export default function Decoweb() {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-          gap: 2,
+          gridTemplateColumns: gridCols > 1
+            ? { xs: "1fr", md: "calc(50% - 8px) calc(50% - 8px)" }
+            : "calc(100% - 0px) calc(0% - 0px)",
+          columnGap: gridCols > 1 ? { xs: 0, md: 2 } : 0,
+          rowGap: 2,
           mt: 3,
+          transition: "grid-template-columns 350ms ease, column-gap 350ms ease",
         }}
       >
         <TransitionGroup component={null}>

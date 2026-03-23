@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Box, Button, Slider, Typography } from "@mui/material";
+import { Box, IconButton, Slider, Tooltip, Typography } from "@mui/material";
 import { GasType, StrategyType } from "./types";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Grid from "@mui/material/Grid2";
@@ -100,15 +100,14 @@ export default function Gas({ index, gas, strategy, removable }: GasProps) {
           <Typography variant="h6" color="#1976d2">
             Gas {index + 1} ({gas.id})
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<DeleteIcon />}
-            disableElevation
-            disabled={!removable}
-            onClick={() => removeGasMutation.mutate()}
-          >
-            Remove gas
-          </Button>
+          <Tooltip title="Remove gas">
+            <IconButton
+              disabled={!removable}
+              onClick={() => removeGasMutation.mutate()}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <Typography>Oxygen {oxygen} %</Typography>

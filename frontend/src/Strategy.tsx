@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Box, Button, Collapse, Slider, Typography } from "@mui/material";
 import { TransitionGroup } from "react-transition-group";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import Grid from "@mui/material/Grid2";
@@ -129,6 +129,18 @@ export default function Strategy({
     },
   });
 
+  const [gasCols, setGasCols] = useState(0);
+  useEffect(() => {
+    if (!gasses.data) return;
+    const count = gasses.data.length;
+    if (count >= gasCols) {
+      setGasCols(count);
+    } else {
+      const id = setTimeout(() => setGasCols(count), 350);
+      return () => clearTimeout(id);
+    }
+  }, [gasses.data?.length]);
+
   const addGas = () => {
     const newGas = {
       strategy: strategy.id,
@@ -194,8 +206,12 @@ export default function Strategy({
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-            gap: 1,
+            gridTemplateColumns: gasCols > 1
+              ? { xs: "1fr", md: "calc(50% - 4px) calc(50% - 4px)" }
+              : "calc(100% - 0px) calc(0% - 0px)",
+            columnGap: gasCols > 1 ? { xs: 0, md: 1 } : 0,
+            rowGap: 1,
+            transition: "grid-template-columns 350ms ease, column-gap 350ms ease",
           }}
         >
           <TransitionGroup component={null}>
